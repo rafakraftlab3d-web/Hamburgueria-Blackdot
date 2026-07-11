@@ -1,108 +1,1338 @@
-<!DOCTYPE html> 
+from pathlib import Path
+import zipfile
+import textwrap
+import os
+
+base = Path("/mnt/data/blackdot-v0.1")
+(base / "css").mkdir(parents=True, exist_ok=True)
+(base / "js").mkdir(parents=True, exist_ok=True)
+
+index_html = """<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Hamburgueria Blackdot</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            font-family: Arial, Helvetica, sans-serif;
-            background: #0d0f14;
-            color: #ffffff;
-        }
-
-        .card {
-            width: 100%;
-            max-width: 460px;
-            padding: 32px;
-            background: #171a21;
-            border: 1px solid #2b303a;
-            border-radius: 22px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-        }
-
-        .logo {
-            width: 62px;
-            height: 62px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 22px;
-            border-radius: 18px;
-            background: #f5a623;
-            color: #111111;
-            font-size: 32px;
-        }
-
-        h1 {
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-
-        p {
-            margin-bottom: 28px;
-            color: #a9b0bd;
-            line-height: 1.5;
-        }
-
-        .botao {
-            width: 100%;
-            min-height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            border-radius: 14px;
-            background: #f5a623;
-            color: #111111;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .status {
-            margin-top: 22px;
-            color: #7e8795;
-            font-size: 14px;
-            text-align: center;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blackdot System</title>
+  <meta name="theme-color" content="#0b0d12">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-
 <body>
-    <main class="card">
-        <div class="logo">🍔</div>
+  <section id="tela-login" class="tela-login">
+    <form id="form-login" class="cartao-login">
+      <div class="logo">🍔</div>
 
-        <h1>Hamburgueria Blackdot</h1>
+      <h1>Blackdot</h1>
+      <p class="texto-secundario">Sistema interno de escalas e pagamentos.</p>
 
-        <p>
-            Sistema interno de escalas, entregas e pagamentos.
-        </p>
+      <div class="campo">
+        <label for="email">E-mail</label>
+        <input
+          id="email"
+          type="email"
+          placeholder="Digite seu e-mail"
+          autocomplete="username"
+          required
+        >
+      </div>
 
-        <button class="botao" type="button">
-            Entrar no sistema
-        </button>
+      <div class="campo">
+        <label for="senha">Senha</label>
+        <input
+          id="senha"
+          type="password"
+          placeholder="Digite sua senha"
+          autocomplete="current-password"
+          required
+        >
+      </div>
 
-        <div class="status">
-            Sistema em desenvolvimento
+      <button id="botao-login" class="botao botao-principal" type="submit">
+        Entrar
+      </button>
+
+      <div id="mensagem-login" class="mensagem"></div>
+    </form>
+  </section>
+
+  <section id="aplicacao" class="oculto">
+    <header class="topo">
+      <div class="container topo-conteudo">
+        <div class="marca">
+          <div class="marca-icone">🍔</div>
+          <div>
+            <strong>Blackdot System</strong>
+            <span id="tipo-usuario">Sistema interno</span>
+          </div>
         </div>
+
+        <button id="botao-sair" class="botao botao-secundario" type="button">
+          Sair
+        </button>
+      </div>
+    </header>
+
+    <main class="container conteudo">
+      <section class="cabecalho-pagina">
+        <h1 id="boas-vindas">Olá</h1>
+        <p id="descricao-painel" class="texto-secundario">
+          Carregando seus dados.
+        </p>
+      </section>
+
+      <section id="painel-admin" class="oculto">
+        <div class="grade-resumo">
+          <article class="cartao resumo-card">
+            <span>Motoboys ativos</span>
+            <strong id="total-motoboys">0</strong>
+          </article>
+
+          <article class="cartao resumo-card">
+            <span>Disponibilidades futuras</span>
+            <strong id="total-disponibilidades">0</strong>
+          </article>
+
+          <article class="cartao resumo-card">
+            <span>Total pendente</span>
+            <strong id="total-pendente-admin">R$ 0,00</strong>
+          </article>
+        </div>
+
+        <section class="cartao secao">
+          <div class="secao-topo">
+            <div>
+              <h2>Disponibilidade dos motoboys</h2>
+              <p class="texto-secundario">
+                Dias marcados para os próximos 30 dias.
+              </p>
+            </div>
+          </div>
+
+          <div id="lista-disponibilidades" class="lista"></div>
+        </section>
+
+        <section class="cartao secao">
+          <div class="secao-topo">
+            <div>
+              <h2>Novo pagamento</h2>
+              <p class="texto-secundario">
+                Registre o valor previsto para um motoboy.
+              </p>
+            </div>
+          </div>
+
+          <form id="form-pagamento">
+            <div class="grade-formulario">
+              <div class="campo">
+                <label for="pagamento-entregador">Motoboy</label>
+                <select id="pagamento-entregador" required></select>
+              </div>
+
+              <div class="campo">
+                <label for="pagamento-valor">Valor</label>
+                <input
+                  id="pagamento-valor"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  placeholder="0,00"
+                  required
+                >
+              </div>
+
+              <div class="campo">
+                <label for="periodo-inicio">Início do período</label>
+                <input id="periodo-inicio" type="date" required>
+              </div>
+
+              <div class="campo">
+                <label for="periodo-fim">Final do período</label>
+                <input id="periodo-fim" type="date" required>
+              </div>
+
+              <div class="campo">
+                <label for="data-prevista">Data prevista</label>
+                <input id="data-prevista" type="date">
+              </div>
+
+              <div class="campo">
+                <label for="pagamento-status">Status</label>
+                <select id="pagamento-status">
+                  <option value="pendente">Pendente</option>
+                  <option value="programado">Programado</option>
+                  <option value="pago">Pago</option>
+                </select>
+              </div>
+            </div>
+
+            <button class="botao botao-principal" type="submit">
+              Salvar pagamento
+            </button>
+
+            <div id="mensagem-pagamento" class="mensagem"></div>
+          </form>
+        </section>
+
+        <section class="cartao secao">
+          <div class="secao-topo">
+            <div>
+              <h2>Pagamentos cadastrados</h2>
+              <p class="texto-secundario">
+                Histórico geral de pagamentos.
+              </p>
+            </div>
+          </div>
+
+          <div class="tabela-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Motoboy</th>
+                  <th>Período</th>
+                  <th>Valor</th>
+                  <th>Previsão</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="tabela-pagamentos-admin"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section id="painel-entregador" class="oculto">
+        <div class="grade-resumo">
+          <article class="cartao resumo-card">
+            <span>Dias disponíveis</span>
+            <strong id="total-disponiveis">0</strong>
+          </article>
+
+          <article class="cartao resumo-card">
+            <span>Pagamentos pendentes</span>
+            <strong id="total-pendente-entregador">R$ 0,00</strong>
+          </article>
+
+          <article class="cartao resumo-card">
+            <span>Próximo pagamento</span>
+            <strong id="proximo-pagamento">Sem previsão</strong>
+          </article>
+        </div>
+
+        <section class="cartao secao">
+          <div class="secao-topo">
+            <div>
+              <h2>Minha disponibilidade</h2>
+              <p class="texto-secundario">
+                Toque em um dia para marcar ou remover.
+              </p>
+            </div>
+          </div>
+
+          <div id="calendario" class="grade-dias"></div>
+          <div id="mensagem-disponibilidade" class="mensagem"></div>
+        </section>
+
+        <section class="cartao secao">
+          <div class="secao-topo">
+            <div>
+              <h2>Meus pagamentos</h2>
+              <p class="texto-secundario">
+                Apenas seus próprios valores aparecem aqui.
+              </p>
+            </div>
+          </div>
+
+          <div class="tabela-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Período</th>
+                  <th>Valor</th>
+                  <th>Previsão</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="tabela-pagamentos-entregador"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
     </main>
+  </section>
+
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
+"""
+
+style_css = """:root {
+  --fundo: #0b0d12;
+  --superficie: #151821;
+  --superficie-2: #1d212c;
+  --borda: #303643;
+  --texto: #ffffff;
+  --texto-2: #9da6b5;
+  --destaque: #f5a623;
+  --destaque-hover: #da901b;
+  --verde: #36c978;
+  --vermelho: #ff6868;
+  --azul: #5792ff;
+  --sombra: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--texto);
+  background:
+    radial-gradient(circle at top, #292014 0, var(--fundo) 42%);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.oculto {
+  display: none !important;
+}
+
+.container {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.tela-login {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.cartao-login {
+  width: 100%;
+  max-width: 430px;
+  padding: 32px;
+  border: 1px solid var(--borda);
+  border-radius: 24px;
+  background: var(--superficie);
+  box-shadow: var(--sombra);
+}
+
+.logo {
+  width: 66px;
+  height: 66px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 24px;
+  border-radius: 19px;
+  background: var(--destaque);
+  font-size: 34px;
+}
+
+h1 {
+  font-size: 30px;
+}
+
+h2 {
+  font-size: 20px;
+}
+
+.texto-secundario {
+  margin-top: 8px;
+  color: var(--texto-2);
+  line-height: 1.5;
+}
+
+.campo {
+  margin-top: 18px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--texto-2);
+  font-size: 14px;
+}
+
+input,
+select {
+  width: 100%;
+  min-height: 50px;
+  padding: 13px 15px;
+  border: 1px solid var(--borda);
+  border-radius: 13px;
+  outline: none;
+  color: var(--texto);
+  background: var(--superficie-2);
+}
+
+input:focus,
+select:focus {
+  border-color: var(--destaque);
+}
+
+.botao {
+  min-height: 48px;
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 13px;
+  font-weight: 700;
+}
+
+.botao-principal {
+  width: 100%;
+  margin-top: 22px;
+  color: #111111;
+  background: var(--destaque);
+}
+
+.botao-principal:hover {
+  background: var(--destaque-hover);
+}
+
+.botao-secundario {
+  color: var(--texto);
+  background: var(--superficie-2);
+  border: 1px solid var(--borda);
+}
+
+.mensagem {
+  min-height: 22px;
+  margin-top: 16px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.mensagem.erro {
+  color: var(--vermelho);
+}
+
+.mensagem.sucesso {
+  color: var(--verde);
+}
+
+.topo {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--borda);
+  background: rgba(11, 13, 18, 0.94);
+  backdrop-filter: blur(14px);
+}
+
+.topo-conteudo {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.marca-icone {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: var(--destaque);
+}
+
+.marca strong,
+.marca span {
+  display: block;
+}
+
+.marca span {
+  margin-top: 3px;
+  color: var(--texto-2);
+  font-size: 13px;
+}
+
+.conteudo {
+  padding: 34px 0 60px;
+}
+
+.cabecalho-pagina {
+  margin-bottom: 26px;
+}
+
+.grade-resumo {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.cartao {
+  border: 1px solid var(--borda);
+  border-radius: 19px;
+  background: var(--superficie);
+  box-shadow: var(--sombra);
+}
+
+.resumo-card {
+  padding: 22px;
+}
+
+.resumo-card span {
+  color: var(--texto-2);
+  font-size: 14px;
+}
+
+.resumo-card strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 27px;
+}
+
+.secao {
+  padding: 24px;
+  margin-top: 20px;
+}
+
+.secao-topo {
+  margin-bottom: 20px;
+}
+
+.grade-formulario {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.grade-dias {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.dia {
+  min-height: 106px;
+  padding: 12px;
+  border: 1px solid var(--borda);
+  border-radius: 14px;
+  background: var(--superficie-2);
+  color: var(--texto);
+  text-align: left;
+}
+
+.dia:hover {
+  border-color: var(--destaque);
+}
+
+.dia.disponivel {
+  border-color: var(--verde);
+  background: rgba(54, 201, 120, 0.12);
+}
+
+.dia .semana {
+  color: var(--texto-2);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.dia .numero {
+  display: block;
+  margin-top: 8px;
+  font-size: 23px;
+  font-weight: 700;
+}
+
+.dia .estado {
+  display: block;
+  margin-top: 9px;
+  color: var(--texto-2);
+  font-size: 12px;
+}
+
+.lista {
+  display: grid;
+  gap: 12px;
+}
+
+.item-lista {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 15px;
+  border: 1px solid var(--borda);
+  border-radius: 14px;
+  background: var(--superficie-2);
+}
+
+.vazio {
+  padding: 24px;
+  border: 1px dashed var(--borda);
+  border-radius: 14px;
+  color: var(--texto-2);
+  text-align: center;
+}
+
+.tabela-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 13px 12px;
+  border-bottom: 1px solid var(--borda);
+  text-align: left;
+}
+
+th {
+  color: var(--texto-2);
+  font-size: 13px;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-pendente {
+  color: var(--destaque);
+  background: rgba(245, 166, 35, 0.16);
+}
+
+.status-programado {
+  color: #82adff;
+  background: rgba(87, 146, 255, 0.16);
+}
+
+.status-pago {
+  color: var(--verde);
+  background: rgba(54, 201, 120, 0.16);
+}
+
+.status-cancelado {
+  color: var(--vermelho);
+  background: rgba(255, 104, 104, 0.14);
+}
+
+@media (max-width: 820px) {
+  .grade-resumo,
+  .grade-formulario {
+    grid-template-columns: 1fr;
+  }
+
+  .grade-dias {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .cartao-login {
+    padding: 26px 21px;
+  }
+
+  .topo-conteudo {
+    min-height: 66px;
+  }
+
+  .marca span {
+    display: none;
+  }
+
+  .secao {
+    padding: 19px;
+  }
+}
+"""
+
+config_js = """const SUPABASE_URL =
+  "https://uckqzovckjnkqamqfuob.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+  "sb_publishable_r3D7V3jVa3OPx9_OY2EGPA_MklVrlEx";
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+"""
+
+app_js = """let usuarioAtual = null;
+let perfilAtual = null;
+
+const elementos = {
+  telaLogin: document.querySelector("#tela-login"),
+  aplicacao: document.querySelector("#aplicacao"),
+  formLogin: document.querySelector("#form-login"),
+  mensagemLogin: document.querySelector("#mensagem-login"),
+  botaoLogin: document.querySelector("#botao-login"),
+  botaoSair: document.querySelector("#botao-sair"),
+  painelAdmin: document.querySelector("#painel-admin"),
+  painelEntregador: document.querySelector("#painel-entregador")
+};
+
+const moeda = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL"
+});
+
+const dataBR = new Intl.DateTimeFormat("pt-BR", {
+  timeZone: "UTC"
+});
+
+function definirMensagem(elemento, texto, tipo = "") {
+  elemento.textContent = texto;
+  elemento.className = `mensagem ${tipo}`;
+}
+
+function formatarData(data) {
+  if (!data) return "Sem previsão";
+
+  return dataBR.format(
+    new Date(`${data}T12:00:00Z`)
+  );
+}
+
+function obterDataISO(data) {
+  const ano = data.getFullYear();
+  const mes = String(data.getMonth() + 1).padStart(2, "0");
+  const dia = String(data.getDate()).padStart(2, "0");
+
+  return `${ano}-${mes}-${dia}`;
+}
+
+function obterProximosDias(quantidade = 15) {
+  const dias = [];
+
+  for (let i = 0; i < quantidade; i += 1) {
+    const data = new Date();
+    data.setHours(12, 0, 0, 0);
+    data.setDate(data.getDate() + i);
+
+    if (data.getDay() === 2) continue;
+
+    dias.push(data);
+  }
+
+  return dias;
+}
+
+function criarStatus(status) {
+  const nomes = {
+    pendente: "Pendente",
+    programado: "Programado",
+    pago: "Pago",
+    cancelado: "Cancelado"
+  };
+
+  return `
+    <span class="status status-${status}">
+      ${nomes[status] || status}
+    </span>
+  `;
+}
+
+function mostrarLogin() {
+  elementos.telaLogin.classList.remove("oculto");
+  elementos.aplicacao.classList.add("oculto");
+  elementos.painelAdmin.classList.add("oculto");
+  elementos.painelEntregador.classList.add("oculto");
+}
+
+function mostrarAplicacao(perfil) {
+  elementos.telaLogin.classList.add("oculto");
+  elementos.aplicacao.classList.remove("oculto");
+
+  const admin = perfil.funcao === "administrador";
+
+  document.querySelector("#boas-vindas").textContent =
+    `Olá, ${perfil.nome}`;
+
+  document.querySelector("#tipo-usuario").textContent =
+    admin ? "Administrador" : "Entregador";
+
+  document.querySelector("#descricao-painel").textContent =
+    admin
+      ? "Acompanhe disponibilidades e pagamentos."
+      : "Marque seus dias e acompanhe seus pagamentos.";
+
+  elementos.painelAdmin.classList.toggle("oculto", !admin);
+  elementos.painelEntregador.classList.toggle("oculto", admin);
+}
+
+async function carregarPerfil(usuarioId) {
+  const { data, error } = await supabaseClient
+    .from("perfis")
+    .select("id, nome, telefone, funcao, ativo")
+    .eq("id", usuarioId)
+    .single();
+
+  if (error) {
+    throw new Error(
+      "Login aceito, mas o perfil não foi encontrado."
+    );
+  }
+
+  if (!data.ativo) {
+    throw new Error("Este usuário está desativado.");
+  }
+
+  return data;
+}
+
+async function iniciarSistema() {
+  const {
+    data: { session },
+    error
+  } = await supabaseClient.auth.getSession();
+
+  if (error || !session) {
+    mostrarLogin();
+    return;
+  }
+
+  try {
+    usuarioAtual = session.user;
+    perfilAtual = await carregarPerfil(usuarioAtual.id);
+
+    mostrarAplicacao(perfilAtual);
+
+    if (perfilAtual.funcao === "administrador") {
+      await carregarPainelAdmin();
+    } else {
+      await carregarPainelEntregador();
+    }
+  } catch (erro) {
+    console.error(erro);
+
+    await supabaseClient.auth.signOut();
+    mostrarLogin();
+    definirMensagem(
+      elementos.mensagemLogin,
+      erro.message,
+      "erro"
+    );
+  }
+}
+
+async function carregarPainelEntregador() {
+  await Promise.all([
+    carregarCalendario(),
+    carregarPagamentosEntregador()
+  ]);
+}
+
+async function carregarCalendario() {
+  const dias = obterProximosDias();
+  const primeiraData = obterDataISO(dias[0]);
+  const ultimaData = obterDataISO(dias[dias.length - 1]);
+
+  const { data: disponibilidades, error } = await supabaseClient
+    .from("disponibilidades")
+    .select("id, data")
+    .eq("entregador_id", usuarioAtual.id)
+    .gte("data", primeiraData)
+    .lte("data", ultimaData);
+
+  if (error) throw error;
+
+  const datasMarcadas = new Map(
+    disponibilidades.map(item => [item.data, item.id])
+  );
+
+  const calendario = document.querySelector("#calendario");
+  calendario.innerHTML = "";
+
+  dias.forEach(data => {
+    const dataISO = obterDataISO(data);
+    const disponivel = datasMarcadas.has(dataISO);
+    const botao = document.createElement("button");
+
+    botao.type = "button";
+    botao.className = `dia ${disponivel ? "disponivel" : ""}`;
+
+    botao.innerHTML = `
+      <span class="semana">
+        ${data.toLocaleDateString("pt-BR", {
+          weekday: "short"
+        })}
+      </span>
+      <span class="numero">${data.getDate()}</span>
+      <span class="estado">
+        ${disponivel ? "Disponível" : "Não marcado"}
+      </span>
+    `;
+
+    botao.addEventListener("click", async () => {
+      botao.disabled = true;
+
+      try {
+        if (disponivel) {
+          const { error: erroDelete } = await supabaseClient
+            .from("disponibilidades")
+            .delete()
+            .eq("id", datasMarcadas.get(dataISO));
+
+          if (erroDelete) throw erroDelete;
+
+          definirMensagem(
+            document.querySelector("#mensagem-disponibilidade"),
+            "Disponibilidade removida.",
+            "sucesso"
+          );
+        } else {
+          const { error: erroInsert } = await supabaseClient
+            .from("disponibilidades")
+            .insert({
+              entregador_id: usuarioAtual.id,
+              data: dataISO,
+              hora_inicio: "18:00",
+              hora_fim: "23:59"
+            });
+
+          if (erroInsert) throw erroInsert;
+
+          definirMensagem(
+            document.querySelector("#mensagem-disponibilidade"),
+            "Disponibilidade registrada.",
+            "sucesso"
+          );
+        }
+
+        await carregarCalendario();
+      } catch (erro) {
+        definirMensagem(
+          document.querySelector("#mensagem-disponibilidade"),
+          erro.message,
+          "erro"
+        );
+
+        botao.disabled = false;
+      }
+    });
+
+    calendario.appendChild(botao);
+  });
+
+  document.querySelector("#total-disponiveis").textContent =
+    disponibilidades.length;
+}
+
+async function carregarPagamentosEntregador() {
+  const { data: pagamentos, error } = await supabaseClient
+    .from("pagamentos")
+    .select("*")
+    .eq("entregador_id", usuarioAtual.id)
+    .order("periodo_inicio", { ascending: false });
+
+  if (error) throw error;
+
+  const corpo = document.querySelector(
+    "#tabela-pagamentos-entregador"
+  );
+
+  corpo.innerHTML = "";
+
+  if (pagamentos.length === 0) {
+    corpo.innerHTML = `
+      <tr>
+        <td colspan="4">Nenhum pagamento cadastrado.</td>
+      </tr>
+    `;
+  }
+
+  pagamentos.forEach(pagamento => {
+    const linha = document.createElement("tr");
+
+    linha.innerHTML = `
+      <td>
+        ${formatarData(pagamento.periodo_inicio)}
+        até
+        ${formatarData(pagamento.periodo_fim)}
+      </td>
+      <td>${moeda.format(Number(pagamento.valor))}</td>
+      <td>${formatarData(pagamento.data_prevista)}</td>
+      <td>${criarStatus(pagamento.status)}</td>
+    `;
+
+    corpo.appendChild(linha);
+  });
+
+  const pendentes = pagamentos.filter(
+    item =>
+      item.status !== "pago" &&
+      item.status !== "cancelado"
+  );
+
+  const totalPendente = pendentes.reduce(
+    (total, item) => total + Number(item.valor),
+    0
+  );
+
+  document.querySelector("#total-pendente-entregador").textContent =
+    moeda.format(totalPendente);
+
+  const comPrevisao = pendentes
+    .filter(item => item.data_prevista)
+    .sort((a, b) =>
+      a.data_prevista.localeCompare(b.data_prevista)
+    );
+
+  document.querySelector("#proximo-pagamento").textContent =
+    comPrevisao.length
+      ? formatarData(comPrevisao[0].data_prevista)
+      : "Sem previsão";
+}
+
+async function carregarPainelAdmin() {
+  await carregarMotoboysAdmin();
+
+  await Promise.all([
+    carregarDisponibilidadesAdmin(),
+    carregarPagamentosAdmin()
+  ]);
+}
+
+async function carregarMotoboysAdmin() {
+  const { data, error } = await supabaseClient
+    .from("perfis")
+    .select("id, nome")
+    .eq("funcao", "entregador")
+    .eq("ativo", true)
+    .order("nome");
+
+  if (error) throw error;
+
+  document.querySelector("#total-motoboys").textContent =
+    data.length;
+
+  const select = document.querySelector("#pagamento-entregador");
+  select.innerHTML = "";
+
+  data.forEach(perfil => {
+    const option = document.createElement("option");
+    option.value = perfil.id;
+    option.textContent = perfil.nome;
+    select.appendChild(option);
+  });
+}
+
+async function carregarDisponibilidadesAdmin() {
+  const hoje = obterDataISO(new Date());
+  const limite = new Date();
+  limite.setDate(limite.getDate() + 30);
+
+  const { data, error } = await supabaseClient
+    .from("disponibilidades")
+    .select(`
+      id,
+      data,
+      hora_inicio,
+      hora_fim,
+      entregador_id,
+      perfis (
+        nome
+      )
+    `)
+    .gte("data", hoje)
+    .lte("data", obterDataISO(limite))
+    .order("data");
+
+  if (error) throw error;
+
+  document.querySelector("#total-disponibilidades").textContent =
+    data.length;
+
+  const lista = document.querySelector(
+    "#lista-disponibilidades"
+  );
+
+  lista.innerHTML = "";
+
+  if (data.length === 0) {
+    lista.innerHTML = `
+      <div class="vazio">
+        Nenhuma disponibilidade marcada.
+      </div>
+    `;
+    return;
+  }
+
+  data.forEach(item => {
+    const elemento = document.createElement("div");
+    elemento.className = "item-lista";
+
+    elemento.innerHTML = `
+      <div>
+        <strong>${item.perfis?.nome || "Entregador"}</strong>
+        <p class="texto-secundario">${formatarData(item.data)}</p>
+      </div>
+      <div>
+        ${item.hora_inicio?.slice(0, 5) || "18:00"}
+        até
+        ${item.hora_fim?.slice(0, 5) || "23:59"}
+      </div>
+    `;
+
+    lista.appendChild(elemento);
+  });
+}
+
+async function carregarPagamentosAdmin() {
+  const { data, error } = await supabaseClient
+    .from("pagamentos")
+    .select(`
+      *,
+      perfis (
+        nome
+      )
+    `)
+    .order("periodo_inicio", { ascending: false });
+
+  if (error) throw error;
+
+  const corpo = document.querySelector(
+    "#tabela-pagamentos-admin"
+  );
+
+  corpo.innerHTML = "";
+
+  if (data.length === 0) {
+    corpo.innerHTML = `
+      <tr>
+        <td colspan="5">Nenhum pagamento cadastrado.</td>
+      </tr>
+    `;
+  }
+
+  data.forEach(pagamento => {
+    const linha = document.createElement("tr");
+
+    linha.innerHTML = `
+      <td>${pagamento.perfis?.nome || "Entregador"}</td>
+      <td>
+        ${formatarData(pagamento.periodo_inicio)}
+        até
+        ${formatarData(pagamento.periodo_fim)}
+      </td>
+      <td>${moeda.format(Number(pagamento.valor))}</td>
+      <td>${formatarData(pagamento.data_prevista)}</td>
+      <td>${criarStatus(pagamento.status)}</td>
+    `;
+
+    corpo.appendChild(linha);
+  });
+
+  const totalPendente = data
+    .filter(
+      item =>
+        item.status !== "pago" &&
+        item.status !== "cancelado"
+    )
+    .reduce(
+      (total, item) => total + Number(item.valor),
+      0
+    );
+
+  document.querySelector("#total-pendente-admin").textContent =
+    moeda.format(totalPendente);
+}
+
+elementos.formLogin.addEventListener("submit", async evento => {
+  evento.preventDefault();
+
+  const email = document.querySelector("#email").value.trim();
+  const senha = document.querySelector("#senha").value;
+
+  elementos.botaoLogin.disabled = true;
+  elementos.botaoLogin.textContent = "Entrando...";
+  definirMensagem(elementos.mensagemLogin, "");
+
+  try {
+    const { data, error } =
+      await supabaseClient.auth.signInWithPassword({
+        email,
+        password: senha
+      });
+
+    if (error) throw error;
+
+    usuarioAtual = data.user;
+    perfilAtual = await carregarPerfil(usuarioAtual.id);
+
+    mostrarAplicacao(perfilAtual);
+
+    if (perfilAtual.funcao === "administrador") {
+      await carregarPainelAdmin();
+    } else {
+      await carregarPainelEntregador();
+    }
+  } catch (erro) {
+    console.error(erro);
+
+    definirMensagem(
+      elementos.mensagemLogin,
+      erro.message || "Não foi possível entrar.",
+      "erro"
+    );
+  } finally {
+    elementos.botaoLogin.disabled = false;
+    elementos.botaoLogin.textContent = "Entrar";
+  }
+});
+
+elementos.botaoSair.addEventListener("click", async () => {
+  await supabaseClient.auth.signOut();
+
+  usuarioAtual = null;
+  perfilAtual = null;
+
+  elementos.formLogin.reset();
+  definirMensagem(elementos.mensagemLogin, "");
+  mostrarLogin();
+});
+
+document
+  .querySelector("#form-pagamento")
+  .addEventListener("submit", async evento => {
+    evento.preventDefault();
+
+    const mensagem = document.querySelector(
+      "#mensagem-pagamento"
+    );
+
+    definirMensagem(mensagem, "Salvando...");
+
+    const status = document.querySelector(
+      "#pagamento-status"
+    ).value;
+
+    const registro = {
+      entregador_id: document.querySelector(
+        "#pagamento-entregador"
+      ).value,
+      periodo_inicio: document.querySelector(
+        "#periodo-inicio"
+      ).value,
+      periodo_fim: document.querySelector(
+        "#periodo-fim"
+      ).value,
+      valor: Number(
+        document.querySelector("#pagamento-valor").value
+      ),
+      data_prevista:
+        document.querySelector("#data-prevista").value || null,
+      data_pagamento:
+        status === "pago" ? obterDataISO(new Date()) : null,
+      status
+    };
+
+    try {
+      const { error } = await supabaseClient
+        .from("pagamentos")
+        .insert(registro);
+
+      if (error) throw error;
+
+      evento.target.reset();
+
+      definirMensagem(
+        mensagem,
+        "Pagamento salvo com sucesso.",
+        "sucesso"
+      );
+
+      await carregarPagamentosAdmin();
+    } catch (erro) {
+      definirMensagem(
+        mensagem,
+        erro.message,
+        "erro"
+      );
+    }
+  });
+
+supabaseClient.auth.onAuthStateChange(evento => {
+  if (evento === "SIGNED_OUT") {
+    mostrarLogin();
+  }
+});
+
+iniciarSistema();
+"""
+
+readme = """# Blackdot System v0.1
+
+Primeira versão funcional do sistema interno da Hamburgueria Blackdot.
+
+## Funcionalidades
+
+- Login com Supabase.
+- Separação entre administrador e entregador.
+- Motoboy marca disponibilidade.
+- Administrador vê disponibilidades futuras.
+- Administrador registra pagamentos.
+- Motoboy vê apenas os próprios pagamentos.
+- Layout responsivo para celular.
+
+## Estrutura
+
+- `index.html`
+- `css/style.css`
+- `js/config.js`
+- `js/app.js`
+
+## Publicação
+
+Os arquivos devem ficar na raiz do repositório, mantendo exatamente as pastas `css` e `js`.
+
+## Usuários de teste
+
+- Administrador: `admin@blackdot.com`
+- Entregador: `felipe@blackdot.com`
+
+As senhas são as cadastradas no Supabase Authentication.
+"""
+
+files = {
+    base / "index.html": index_html,
+    base / "css" / "style.css": style_css,
+    base / "js" / "config.js": config_js,
+    base / "js" / "app.js": app_js,
+    base / "README.md": readme,
+}
+
+for path, content in files.items():
+    path.write_text(content, encoding="utf-8")
+
+zip_path = Path("/mnt/data/blackdot-v0.1.zip")
+with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
+    for path in base.rglob("*"):
+        if path.is_file():
+            z.write(path, path.relative_to(base.parent))
+
+print(zip_path)
