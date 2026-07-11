@@ -1,272 +1,13 @@
-from pathlib import Path
-import zipfile
-import textwrap
-import os
-
-base = Path("/mnt/data/blackdot-v0.1")
-(base / "css").mkdir(parents=True, exist_ok=True)
-(base / "js").mkdir(parents=True, exist_ok=True)
-
-index_html = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blackdot System</title>
   <meta name="theme-color" content="#0b0d12">
-  <link rel="stylesheet" href="css/style.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
-<body>
-  <section id="tela-login" class="tela-login">
-    <form id="form-login" class="cartao-login">
-      <div class="logo">🍔</div>
 
-      <h1>Blackdot</h1>
-      <p class="texto-secundario">Sistema interno de escalas e pagamentos.</p>
-
-      <div class="campo">
-        <label for="email">E-mail</label>
-        <input
-          id="email"
-          type="email"
-          placeholder="Digite seu e-mail"
-          autocomplete="username"
-          required
-        >
-      </div>
-
-      <div class="campo">
-        <label for="senha">Senha</label>
-        <input
-          id="senha"
-          type="password"
-          placeholder="Digite sua senha"
-          autocomplete="current-password"
-          required
-        >
-      </div>
-
-      <button id="botao-login" class="botao botao-principal" type="submit">
-        Entrar
-      </button>
-
-      <div id="mensagem-login" class="mensagem"></div>
-    </form>
-  </section>
-
-  <section id="aplicacao" class="oculto">
-    <header class="topo">
-      <div class="container topo-conteudo">
-        <div class="marca">
-          <div class="marca-icone">🍔</div>
-          <div>
-            <strong>Blackdot System</strong>
-            <span id="tipo-usuario">Sistema interno</span>
-          </div>
-        </div>
-
-        <button id="botao-sair" class="botao botao-secundario" type="button">
-          Sair
-        </button>
-      </div>
-    </header>
-
-    <main class="container conteudo">
-      <section class="cabecalho-pagina">
-        <h1 id="boas-vindas">Olá</h1>
-        <p id="descricao-painel" class="texto-secundario">
-          Carregando seus dados.
-        </p>
-      </section>
-
-      <section id="painel-admin" class="oculto">
-        <div class="grade-resumo">
-          <article class="cartao resumo-card">
-            <span>Motoboys ativos</span>
-            <strong id="total-motoboys">0</strong>
-          </article>
-
-          <article class="cartao resumo-card">
-            <span>Disponibilidades futuras</span>
-            <strong id="total-disponibilidades">0</strong>
-          </article>
-
-          <article class="cartao resumo-card">
-            <span>Total pendente</span>
-            <strong id="total-pendente-admin">R$ 0,00</strong>
-          </article>
-        </div>
-
-        <section class="cartao secao">
-          <div class="secao-topo">
-            <div>
-              <h2>Disponibilidade dos motoboys</h2>
-              <p class="texto-secundario">
-                Dias marcados para os próximos 30 dias.
-              </p>
-            </div>
-          </div>
-
-          <div id="lista-disponibilidades" class="lista"></div>
-        </section>
-
-        <section class="cartao secao">
-          <div class="secao-topo">
-            <div>
-              <h2>Novo pagamento</h2>
-              <p class="texto-secundario">
-                Registre o valor previsto para um motoboy.
-              </p>
-            </div>
-          </div>
-
-          <form id="form-pagamento">
-            <div class="grade-formulario">
-              <div class="campo">
-                <label for="pagamento-entregador">Motoboy</label>
-                <select id="pagamento-entregador" required></select>
-              </div>
-
-              <div class="campo">
-                <label for="pagamento-valor">Valor</label>
-                <input
-                  id="pagamento-valor"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  placeholder="0,00"
-                  required
-                >
-              </div>
-
-              <div class="campo">
-                <label for="periodo-inicio">Início do período</label>
-                <input id="periodo-inicio" type="date" required>
-              </div>
-
-              <div class="campo">
-                <label for="periodo-fim">Final do período</label>
-                <input id="periodo-fim" type="date" required>
-              </div>
-
-              <div class="campo">
-                <label for="data-prevista">Data prevista</label>
-                <input id="data-prevista" type="date">
-              </div>
-
-              <div class="campo">
-                <label for="pagamento-status">Status</label>
-                <select id="pagamento-status">
-                  <option value="pendente">Pendente</option>
-                  <option value="programado">Programado</option>
-                  <option value="pago">Pago</option>
-                </select>
-              </div>
-            </div>
-
-            <button class="botao botao-principal" type="submit">
-              Salvar pagamento
-            </button>
-
-            <div id="mensagem-pagamento" class="mensagem"></div>
-          </form>
-        </section>
-
-        <section class="cartao secao">
-          <div class="secao-topo">
-            <div>
-              <h2>Pagamentos cadastrados</h2>
-              <p class="texto-secundario">
-                Histórico geral de pagamentos.
-              </p>
-            </div>
-          </div>
-
-          <div class="tabela-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Motoboy</th>
-                  <th>Período</th>
-                  <th>Valor</th>
-                  <th>Previsão</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="tabela-pagamentos-admin"></tbody>
-            </table>
-          </div>
-        </section>
-      </section>
-
-      <section id="painel-entregador" class="oculto">
-        <div class="grade-resumo">
-          <article class="cartao resumo-card">
-            <span>Dias disponíveis</span>
-            <strong id="total-disponiveis">0</strong>
-          </article>
-
-          <article class="cartao resumo-card">
-            <span>Pagamentos pendentes</span>
-            <strong id="total-pendente-entregador">R$ 0,00</strong>
-          </article>
-
-          <article class="cartao resumo-card">
-            <span>Próximo pagamento</span>
-            <strong id="proximo-pagamento">Sem previsão</strong>
-          </article>
-        </div>
-
-        <section class="cartao secao">
-          <div class="secao-topo">
-            <div>
-              <h2>Minha disponibilidade</h2>
-              <p class="texto-secundario">
-                Toque em um dia para marcar ou remover.
-              </p>
-            </div>
-          </div>
-
-          <div id="calendario" class="grade-dias"></div>
-          <div id="mensagem-disponibilidade" class="mensagem"></div>
-        </section>
-
-        <section class="cartao secao">
-          <div class="secao-topo">
-            <div>
-              <h2>Meus pagamentos</h2>
-              <p class="texto-secundario">
-                Apenas seus próprios valores aparecem aqui.
-              </p>
-            </div>
-          </div>
-
-          <div class="tabela-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Período</th>
-                  <th>Valor</th>
-                  <th>Previsão</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="tabela-pagamentos-entregador"></tbody>
-            </table>
-          </div>
-        </section>
-      </section>
-    </main>
-  </section>
-
-  <script src="js/config.js"></script>
-  <script src="js/app.js"></script>
-</body>
-</html>
-"""
-
-style_css = """:root {
+  <style>
+:root {
   --fundo: #0b0d12;
   --superficie: #151821;
   --superficie-2: #1d212c;
@@ -667,9 +408,344 @@ th {
     padding: 19px;
   }
 }
-"""
+  </style>
 
-config_js = """const SUPABASE_URL =
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+  <section id="tela-login" class="tela-login">
+    <form id="form-login" class="cartao-login">
+      <div class="logo">🍔</div>
+
+      <h1>Blackdot</h1>
+      <p class="texto-secundario">
+        Sistema interno de escalas e pagamentos.
+      </p>
+
+      <div class="campo">
+        <label for="email">E-mail</label>
+        <input
+          id="email"
+          type="email"
+          placeholder="Digite seu e-mail"
+          autocomplete="username"
+          required
+        >
+      </div>
+
+      <div class="campo">
+        <label for="senha">Senha</label>
+        <input
+          id="senha"
+          type="password"
+          placeholder="Digite sua senha"
+          autocomplete="current-password"
+          required
+        >
+      </div>
+
+      <button
+        id="botao-login"
+        class="botao botao-principal"
+        type="submit"
+      >
+        Entrar
+      </button>
+
+      <div id="mensagem-login" class="mensagem"></div>
+    </form>
+  </section>
+
+  <section id="aplicacao" class="oculto">
+    <header class="topo">
+      <div class="container topo-conteudo">
+        <div class="marca">
+          <div class="marca-icone">🍔</div>
+
+          <div>
+            <strong>Blackdot System</strong>
+            <span id="tipo-usuario">Sistema interno</span>
+          </div>
+        </div>
+
+        <button
+          id="botao-sair"
+          class="botao botao-secundario"
+          type="button"
+        >
+          Sair
+        </button>
+      </div>
+    </header>
+
+    <main class="container conteudo">
+      <section class="cabecalho-pagina">
+        <h1 id="boas-vindas">Olá</h1>
+
+        <p
+          id="descricao-painel"
+          class="texto-secundario"
+        >
+          Carregando seus dados.
+        </p>
+      </section>
+
+      <section id="painel-admin" class="oculto">
+        <div class="grade-resumo">
+          <article class="cartao resumo-card">
+            <span>Motoboys ativos</span>
+            <strong id="total-motoboys">0</strong>
+          </article>
+
+          <article class="cartao resumo-card">
+            <span>Disponibilidades futuras</span>
+            <strong id="total-disponibilidades">0</strong>
+          </article>
+
+          <article class="cartao resumo-card">
+            <span>Total pendente</span>
+            <strong id="total-pendente-admin">
+              R$ 0,00
+            </strong>
+          </article>
+        </div>
+
+        <section class="cartao secao">
+          <div class="secao-topo">
+            <div>
+              <h2>Disponibilidade dos motoboys</h2>
+
+              <p class="texto-secundario">
+                Dias marcados para os próximos 30 dias.
+              </p>
+            </div>
+          </div>
+
+          <div
+            id="lista-disponibilidades"
+            class="lista"
+          ></div>
+        </section>
+
+        <section class="cartao secao">
+          <div class="secao-topo">
+            <div>
+              <h2>Novo pagamento</h2>
+
+              <p class="texto-secundario">
+                Registre o valor previsto para um motoboy.
+              </p>
+            </div>
+          </div>
+
+          <form id="form-pagamento">
+            <div class="grade-formulario">
+              <div class="campo">
+                <label for="pagamento-entregador">
+                  Motoboy
+                </label>
+
+                <select
+                  id="pagamento-entregador"
+                  required
+                ></select>
+              </div>
+
+              <div class="campo">
+                <label for="pagamento-valor">
+                  Valor
+                </label>
+
+                <input
+                  id="pagamento-valor"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  placeholder="0,00"
+                  required
+                >
+              </div>
+
+              <div class="campo">
+                <label for="periodo-inicio">
+                  Início do período
+                </label>
+
+                <input
+                  id="periodo-inicio"
+                  type="date"
+                  required
+                >
+              </div>
+
+              <div class="campo">
+                <label for="periodo-fim">
+                  Final do período
+                </label>
+
+                <input
+                  id="periodo-fim"
+                  type="date"
+                  required
+                >
+              </div>
+
+              <div class="campo">
+                <label for="data-prevista">
+                  Data prevista
+                </label>
+
+                <input
+                  id="data-prevista"
+                  type="date"
+                >
+              </div>
+
+              <div class="campo">
+                <label for="pagamento-status">
+                  Status
+                </label>
+
+                <select id="pagamento-status">
+                  <option value="pendente">
+                    Pendente
+                  </option>
+
+                  <option value="programado">
+                    Programado
+                  </option>
+
+                  <option value="pago">
+                    Pago
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <button
+              class="botao botao-principal"
+              type="submit"
+            >
+              Salvar pagamento
+            </button>
+
+            <div
+              id="mensagem-pagamento"
+              class="mensagem"
+            ></div>
+          </form>
+        </section>
+
+        <section class="cartao secao">
+          <div class="secao-topo">
+            <div>
+              <h2>Pagamentos cadastrados</h2>
+
+              <p class="texto-secundario">
+                Histórico geral de pagamentos.
+              </p>
+            </div>
+          </div>
+
+          <div class="tabela-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Motoboy</th>
+                  <th>Período</th>
+                  <th>Valor</th>
+                  <th>Previsão</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+
+              <tbody
+                id="tabela-pagamentos-admin"
+              ></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section id="painel-entregador" class="oculto">
+        <div class="grade-resumo">
+          <article class="cartao resumo-card">
+            <span>Dias disponíveis</span>
+            <strong id="total-disponiveis">0</strong>
+          </article>
+
+          <article class="cartao resumo-card">
+            <span>Pagamentos pendentes</span>
+            <strong id="total-pendente-entregador">
+              R$ 0,00
+            </strong>
+          </article>
+
+          <article class="cartao resumo-card">
+            <span>Próximo pagamento</span>
+            <strong id="proximo-pagamento">
+              Sem previsão
+            </strong>
+          </article>
+        </div>
+
+        <section class="cartao secao">
+          <div class="secao-topo">
+            <div>
+              <h2>Minha disponibilidade</h2>
+
+              <p class="texto-secundario">
+                Toque em um dia para marcar ou remover.
+              </p>
+            </div>
+          </div>
+
+          <div
+            id="calendario"
+            class="grade-dias"
+          ></div>
+
+          <div
+            id="mensagem-disponibilidade"
+            class="mensagem"
+          ></div>
+        </section>
+
+        <section class="cartao secao">
+          <div class="secao-topo">
+            <div>
+              <h2>Meus pagamentos</h2>
+
+              <p class="texto-secundario">
+                Apenas seus próprios valores aparecem aqui.
+              </p>
+            </div>
+          </div>
+
+          <div class="tabela-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Período</th>
+                  <th>Valor</th>
+                  <th>Previsão</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+
+              <tbody
+                id="tabela-pagamentos-entregador"
+              ></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+  </section>
+
+  <script>
+const SUPABASE_URL =
   "https://uckqzovckjnkqamqfuob.supabase.co";
 
 const SUPABASE_PUBLISHABLE_KEY =
@@ -679,9 +755,8 @@ const supabaseClient = supabase.createClient(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY
 );
-"""
 
-app_js = """let usuarioAtual = null;
+let usuarioAtual = null;
 let perfilAtual = null;
 
 const elementos = {
@@ -692,7 +767,9 @@ const elementos = {
   botaoLogin: document.querySelector("#botao-login"),
   botaoSair: document.querySelector("#botao-sair"),
   painelAdmin: document.querySelector("#painel-admin"),
-  painelEntregador: document.querySelector("#painel-entregador")
+  painelEntregador: document.querySelector(
+    "#painel-entregador"
+  )
 };
 
 const moeda = new Intl.NumberFormat("pt-BR", {
@@ -710,7 +787,9 @@ function definirMensagem(elemento, texto, tipo = "") {
 }
 
 function formatarData(data) {
-  if (!data) return "Sem previsão";
+  if (!data) {
+    return "Sem previsão";
+  }
 
   return dataBR.format(
     new Date(`${data}T12:00:00Z`)
@@ -719,8 +798,14 @@ function formatarData(data) {
 
 function obterDataISO(data) {
   const ano = data.getFullYear();
-  const mes = String(data.getMonth() + 1).padStart(2, "0");
-  const dia = String(data.getDate()).padStart(2, "0");
+
+  const mes = String(
+    data.getMonth() + 1
+  ).padStart(2, "0");
+
+  const dia = String(
+    data.getDate()
+  ).padStart(2, "0");
 
   return `${ano}-${mes}-${dia}`;
 }
@@ -730,10 +815,13 @@ function obterProximosDias(quantidade = 15) {
 
   for (let i = 0; i < quantidade; i += 1) {
     const data = new Date();
+
     data.setHours(12, 0, 0, 0);
     data.setDate(data.getDate() + i);
 
-    if (data.getDay() === 2) continue;
+    if (data.getDay() === 2) {
+      continue;
+    }
 
     dias.push(data);
   }
@@ -767,21 +855,34 @@ function mostrarAplicacao(perfil) {
   elementos.telaLogin.classList.add("oculto");
   elementos.aplicacao.classList.remove("oculto");
 
-  const admin = perfil.funcao === "administrador";
+  const admin =
+    perfil.funcao === "administrador";
 
-  document.querySelector("#boas-vindas").textContent =
-    `Olá, ${perfil.nome}`;
+  document.querySelector(
+    "#boas-vindas"
+  ).textContent = `Olá, ${perfil.nome}`;
 
-  document.querySelector("#tipo-usuario").textContent =
-    admin ? "Administrador" : "Entregador";
+  document.querySelector(
+    "#tipo-usuario"
+  ).textContent = admin
+    ? "Administrador"
+    : "Entregador";
 
-  document.querySelector("#descricao-painel").textContent =
+  document.querySelector(
+    "#descricao-painel"
+  ).textContent = admin
+    ? "Acompanhe disponibilidades e pagamentos."
+    : "Marque seus dias e acompanhe seus pagamentos.";
+
+  elementos.painelAdmin.classList.toggle(
+    "oculto",
+    !admin
+  );
+
+  elementos.painelEntregador.classList.toggle(
+    "oculto",
     admin
-      ? "Acompanhe disponibilidades e pagamentos."
-      : "Marque seus dias e acompanhe seus pagamentos.";
-
-  elementos.painelAdmin.classList.toggle("oculto", !admin);
-  elementos.painelEntregador.classList.toggle("oculto", admin);
+  );
 }
 
 async function carregarPerfil(usuarioId) {
@@ -798,7 +899,9 @@ async function carregarPerfil(usuarioId) {
   }
 
   if (!data.ativo) {
-    throw new Error("Este usuário está desativado.");
+    throw new Error(
+      "Este usuário está desativado."
+    );
   }
 
   return data;
@@ -817,11 +920,16 @@ async function iniciarSistema() {
 
   try {
     usuarioAtual = session.user;
-    perfilAtual = await carregarPerfil(usuarioAtual.id);
+
+    perfilAtual = await carregarPerfil(
+      usuarioAtual.id
+    );
 
     mostrarAplicacao(perfilAtual);
 
-    if (perfilAtual.funcao === "administrador") {
+    if (
+      perfilAtual.funcao === "administrador"
+    ) {
       await carregarPainelAdmin();
     } else {
       await carregarPainelEntregador();
@@ -830,7 +938,9 @@ async function iniciarSistema() {
     console.error(erro);
 
     await supabaseClient.auth.signOut();
+
     mostrarLogin();
+
     definirMensagem(
       elementos.mensagemLogin,
       erro.message,
@@ -845,166 +955,283 @@ async function carregarPainelEntregador() {
     carregarPagamentosEntregador()
   ]);
 }
-
 async function carregarCalendario() {
   const dias = obterProximosDias();
-  const primeiraData = obterDataISO(dias[0]);
-  const ultimaData = obterDataISO(dias[dias.length - 1]);
 
-  const { data: disponibilidades, error } = await supabaseClient
+  const primeiraData =
+    obterDataISO(dias[0]);
+
+  const ultimaData =
+    obterDataISO(dias[dias.length - 1]);
+
+  const {
+    data: disponibilidades,
+    error
+  } = await supabaseClient
     .from("disponibilidades")
     .select("id, data")
     .eq("entregador_id", usuarioAtual.id)
     .gte("data", primeiraData)
     .lte("data", ultimaData);
 
-  if (error) throw error;
+  if (error) {
+    throw error;
+  }
 
   const datasMarcadas = new Map(
-    disponibilidades.map(item => [item.data, item.id])
+    disponibilidades.map(item => [
+      item.data,
+      item.id
+    ])
   );
 
-  const calendario = document.querySelector("#calendario");
+  const calendario =
+    document.querySelector("#calendario");
+
   calendario.innerHTML = "";
 
   dias.forEach(data => {
-    const dataISO = obterDataISO(data);
-    const disponivel = datasMarcadas.has(dataISO);
-    const botao = document.createElement("button");
+    const dataISO =
+      obterDataISO(data);
+
+    const disponivel =
+      datasMarcadas.has(dataISO);
+
+    const botao =
+      document.createElement("button");
 
     botao.type = "button";
-    botao.className = `dia ${disponivel ? "disponivel" : ""}`;
+
+    botao.className =
+      `dia ${disponivel ? "disponivel" : ""}`;
 
     botao.innerHTML = `
       <span class="semana">
-        ${data.toLocaleDateString("pt-BR", {
-          weekday: "short"
-        })}
+        ${data.toLocaleDateString(
+          "pt-BR",
+          {
+            weekday: "short"
+          }
+        )}
       </span>
-      <span class="numero">${data.getDate()}</span>
+
+      <span class="numero">
+        ${data.getDate()}
+      </span>
+
       <span class="estado">
-        ${disponivel ? "Disponível" : "Não marcado"}
+        ${
+          disponivel
+            ? "Disponível"
+            : "Não marcado"
+        }
       </span>
     `;
 
-    botao.addEventListener("click", async () => {
-      botao.disabled = true;
+    botao.addEventListener(
+      "click",
+      async () => {
+        botao.disabled = true;
 
-      try {
-        if (disponivel) {
-          const { error: erroDelete } = await supabaseClient
-            .from("disponibilidades")
-            .delete()
-            .eq("id", datasMarcadas.get(dataISO));
+        try {
+          if (disponivel) {
+            const {
+              error: erroDelete
+            } = await supabaseClient
+              .from("disponibilidades")
+              .delete()
+              .eq(
+                "id",
+                datasMarcadas.get(dataISO)
+              );
 
-          if (erroDelete) throw erroDelete;
+            if (erroDelete) {
+              throw erroDelete;
+            }
 
+            definirMensagem(
+              document.querySelector(
+                "#mensagem-disponibilidade"
+              ),
+              "Disponibilidade removida.",
+              "sucesso"
+            );
+          } else {
+            const {
+              error: erroInsert
+            } = await supabaseClient
+              .from("disponibilidades")
+              .insert({
+                entregador_id:
+                  usuarioAtual.id,
+
+                data:
+                  dataISO,
+
+                hora_inicio:
+                  "18:00",
+
+                hora_fim:
+                  "23:59"
+              });
+
+            if (erroInsert) {
+              throw erroInsert;
+            }
+
+            definirMensagem(
+              document.querySelector(
+                "#mensagem-disponibilidade"
+              ),
+              "Disponibilidade registrada.",
+              "sucesso"
+            );
+          }
+
+          await carregarCalendario();
+        } catch (erro) {
           definirMensagem(
-            document.querySelector("#mensagem-disponibilidade"),
-            "Disponibilidade removida.",
-            "sucesso"
+            document.querySelector(
+              "#mensagem-disponibilidade"
+            ),
+            erro.message,
+            "erro"
           );
-        } else {
-          const { error: erroInsert } = await supabaseClient
-            .from("disponibilidades")
-            .insert({
-              entregador_id: usuarioAtual.id,
-              data: dataISO,
-              hora_inicio: "18:00",
-              hora_fim: "23:59"
-            });
 
-          if (erroInsert) throw erroInsert;
-
-          definirMensagem(
-            document.querySelector("#mensagem-disponibilidade"),
-            "Disponibilidade registrada.",
-            "sucesso"
-          );
+          botao.disabled = false;
         }
-
-        await carregarCalendario();
-      } catch (erro) {
-        definirMensagem(
-          document.querySelector("#mensagem-disponibilidade"),
-          erro.message,
-          "erro"
-        );
-
-        botao.disabled = false;
       }
-    });
+    );
 
     calendario.appendChild(botao);
   });
 
-  document.querySelector("#total-disponiveis").textContent =
+  document.querySelector(
+    "#total-disponiveis"
+  ).textContent =
     disponibilidades.length;
 }
 
 async function carregarPagamentosEntregador() {
-  const { data: pagamentos, error } = await supabaseClient
+  const {
+    data: pagamentos,
+    error
+  } = await supabaseClient
     .from("pagamentos")
     .select("*")
-    .eq("entregador_id", usuarioAtual.id)
-    .order("periodo_inicio", { ascending: false });
+    .eq(
+      "entregador_id",
+      usuarioAtual.id
+    )
+    .order(
+      "periodo_inicio",
+      {
+        ascending: false
+      }
+    );
 
-  if (error) throw error;
+  if (error) {
+    throw error;
+  }
 
-  const corpo = document.querySelector(
-    "#tabela-pagamentos-entregador"
-  );
+  const corpo =
+    document.querySelector(
+      "#tabela-pagamentos-entregador"
+    );
 
   corpo.innerHTML = "";
 
   if (pagamentos.length === 0) {
     corpo.innerHTML = `
       <tr>
-        <td colspan="4">Nenhum pagamento cadastrado.</td>
+        <td colspan="4">
+          Nenhum pagamento cadastrado.
+        </td>
       </tr>
     `;
   }
 
-  pagamentos.forEach(pagamento => {
-    const linha = document.createElement("tr");
+  pagamentos.forEach(
+    pagamento => {
+      const linha =
+        document.createElement("tr");
 
-    linha.innerHTML = `
-      <td>
-        ${formatarData(pagamento.periodo_inicio)}
-        até
-        ${formatarData(pagamento.periodo_fim)}
-      </td>
-      <td>${moeda.format(Number(pagamento.valor))}</td>
-      <td>${formatarData(pagamento.data_prevista)}</td>
-      <td>${criarStatus(pagamento.status)}</td>
-    `;
+      linha.innerHTML = `
+        <td>
+          ${formatarData(
+            pagamento.periodo_inicio
+          )}
+          até
+          ${formatarData(
+            pagamento.periodo_fim
+          )}
+        </td>
 
-    corpo.appendChild(linha);
-  });
+        <td>
+          ${moeda.format(
+            Number(
+              pagamento.valor
+            )
+          )}
+        </td>
 
-  const pendentes = pagamentos.filter(
-    item =>
-      item.status !== "pago" &&
-      item.status !== "cancelado"
+        <td>
+          ${formatarData(
+            pagamento.data_prevista
+          )}
+        </td>
+
+        <td>
+          ${criarStatus(
+            pagamento.status
+          )}
+        </td>
+      `;
+
+      corpo.appendChild(linha);
+    }
   );
 
-  const totalPendente = pendentes.reduce(
-    (total, item) => total + Number(item.valor),
-    0
-  );
-
-  document.querySelector("#total-pendente-entregador").textContent =
-    moeda.format(totalPendente);
-
-  const comPrevisao = pendentes
-    .filter(item => item.data_prevista)
-    .sort((a, b) =>
-      a.data_prevista.localeCompare(b.data_prevista)
+  const pendentes =
+    pagamentos.filter(
+      item =>
+        item.status !== "pago" &&
+        item.status !== "cancelado"
     );
 
-  document.querySelector("#proximo-pagamento").textContent =
-    comPrevisao.length
-      ? formatarData(comPrevisao[0].data_prevista)
+  const totalPendente =
+    pendentes.reduce(
+      (total, item) =>
+        total + Number(item.valor),
+      0
+    );
+
+  document.querySelector(
+    "#total-pendente-entregador"
+  ).textContent =
+    moeda.format(totalPendente);
+
+  const comPrevisao =
+    pendentes
+      .filter(
+        item =>
+          item.data_prevista
+      )
+      .sort(
+        (a, b) =>
+          a.data_prevista.localeCompare(
+            b.data_prevista
+          )
+      );
+
+  document.querySelector(
+    "#proximo-pagamento"
+  ).textContent =
+    comPrevisao.length > 0
+      ? formatarData(
+          comPrevisao[0]
+            .data_prevista
+        )
       : "Sem previsão";
 }
 
@@ -1018,35 +1245,67 @@ async function carregarPainelAdmin() {
 }
 
 async function carregarMotoboysAdmin() {
-  const { data, error } = await supabaseClient
+  const {
+    data,
+    error
+  } = await supabaseClient
     .from("perfis")
     .select("id, nome")
-    .eq("funcao", "entregador")
-    .eq("ativo", true)
+    .eq(
+      "funcao",
+      "entregador"
+    )
+    .eq(
+      "ativo",
+      true
+    )
     .order("nome");
 
-  if (error) throw error;
+  if (error) {
+    throw error;
+  }
 
-  document.querySelector("#total-motoboys").textContent =
+  document.querySelector(
+    "#total-motoboys"
+  ).textContent =
     data.length;
 
-  const select = document.querySelector("#pagamento-entregador");
+  const select =
+    document.querySelector(
+      "#pagamento-entregador"
+    );
+
   select.innerHTML = "";
 
   data.forEach(perfil => {
-    const option = document.createElement("option");
-    option.value = perfil.id;
-    option.textContent = perfil.nome;
+    const option =
+      document.createElement("option");
+
+    option.value =
+      perfil.id;
+
+    option.textContent =
+      perfil.nome;
+
     select.appendChild(option);
   });
 }
 
 async function carregarDisponibilidadesAdmin() {
-  const hoje = obterDataISO(new Date());
-  const limite = new Date();
-  limite.setDate(limite.getDate() + 30);
+  const hoje =
+    obterDataISO(new Date());
 
-  const { data, error } = await supabaseClient
+  const limite =
+    new Date();
+
+  limite.setDate(
+    limite.getDate() + 30
+  );
+
+  const {
+    data,
+    error
+  } = await supabaseClient
     .from("disponibilidades")
     .select(`
       id,
@@ -1058,18 +1317,29 @@ async function carregarDisponibilidadesAdmin() {
         nome
       )
     `)
-    .gte("data", hoje)
-    .lte("data", obterDataISO(limite))
+    .gte(
+      "data",
+      hoje
+    )
+    .lte(
+      "data",
+      obterDataISO(limite)
+    )
     .order("data");
 
-  if (error) throw error;
+  if (error) {
+    throw error;
+  }
 
-  document.querySelector("#total-disponibilidades").textContent =
+  document.querySelector(
+    "#total-disponibilidades"
+  ).textContent =
     data.length;
 
-  const lista = document.querySelector(
-    "#lista-disponibilidades"
-  );
+  const lista =
+    document.querySelector(
+      "#lista-disponibilidades"
+    );
 
   lista.innerHTML = "";
 
@@ -1079,22 +1349,45 @@ async function carregarDisponibilidadesAdmin() {
         Nenhuma disponibilidade marcada.
       </div>
     `;
+
     return;
   }
 
   data.forEach(item => {
-    const elemento = document.createElement("div");
-    elemento.className = "item-lista";
+    const elemento =
+      document.createElement("div");
+
+    elemento.className =
+      "item-lista";
 
     elemento.innerHTML = `
       <div>
-        <strong>${item.perfis?.nome || "Entregador"}</strong>
-        <p class="texto-secundario">${formatarData(item.data)}</p>
+        <strong>
+          ${
+            item.perfis?.nome ||
+            "Entregador"
+          }
+        </strong>
+
+        <p class="texto-secundario">
+          ${formatarData(
+            item.data
+          )}
+        </p>
       </div>
+
       <div>
-        ${item.hora_inicio?.slice(0, 5) || "18:00"}
+        ${
+          item.hora_inicio
+            ?.slice(0, 5) ||
+          "18:00"
+        }
         até
-        ${item.hora_fim?.slice(0, 5) || "23:59"}
+        ${
+          item.hora_fim
+            ?.slice(0, 5) ||
+          "23:59"
+        }
       </div>
     `;
 
@@ -1103,7 +1396,10 @@ async function carregarDisponibilidadesAdmin() {
 }
 
 async function carregarPagamentosAdmin() {
-  const { data, error } = await supabaseClient
+  const {
+    data,
+    error
+  } = await supabaseClient
     .from("pagamentos")
     .select(`
       *,
@@ -1111,152 +1407,270 @@ async function carregarPagamentosAdmin() {
         nome
       )
     `)
-    .order("periodo_inicio", { ascending: false });
+    .order(
+      "periodo_inicio",
+      {
+        ascending: false
+      }
+    );
 
-  if (error) throw error;
+  if (error) {
+    throw error;
+  }
 
-  const corpo = document.querySelector(
-    "#tabela-pagamentos-admin"
-  );
+  const corpo =
+    document.querySelector(
+      "#tabela-pagamentos-admin"
+    );
 
   corpo.innerHTML = "";
 
   if (data.length === 0) {
     corpo.innerHTML = `
       <tr>
-        <td colspan="5">Nenhum pagamento cadastrado.</td>
+        <td colspan="5">
+          Nenhum pagamento cadastrado.
+        </td>
       </tr>
     `;
   }
 
-  data.forEach(pagamento => {
-    const linha = document.createElement("tr");
+  data.forEach(
+    pagamento => {
+      const linha =
+        document.createElement("tr");
 
-    linha.innerHTML = `
-      <td>${pagamento.perfis?.nome || "Entregador"}</td>
-      <td>
-        ${formatarData(pagamento.periodo_inicio)}
-        até
-        ${formatarData(pagamento.periodo_fim)}
-      </td>
-      <td>${moeda.format(Number(pagamento.valor))}</td>
-      <td>${formatarData(pagamento.data_prevista)}</td>
-      <td>${criarStatus(pagamento.status)}</td>
-    `;
+      linha.innerHTML = `
+        <td>
+          ${
+            pagamento.perfis?.nome ||
+            "Entregador"
+          }
+        </td>
 
-    corpo.appendChild(linha);
-  });
+        <td>
+          ${formatarData(
+            pagamento.periodo_inicio
+          )}
+          até
+          ${formatarData(
+            pagamento.periodo_fim
+          )}
+        </td>
 
-  const totalPendente = data
-    .filter(
-      item =>
-        item.status !== "pago" &&
-        item.status !== "cancelado"
-    )
-    .reduce(
-      (total, item) => total + Number(item.valor),
-      0
-    );
+        <td>
+          ${moeda.format(
+            Number(
+              pagamento.valor
+            )
+          )}
+        </td>
 
-  document.querySelector("#total-pendente-admin").textContent =
+        <td>
+          ${formatarData(
+            pagamento.data_prevista
+          )}
+        </td>
+
+        <td>
+          ${criarStatus(
+            pagamento.status
+          )}
+        </td>
+      `;
+
+      corpo.appendChild(linha);
+    }
+  );
+
+  const totalPendente =
+    data
+      .filter(
+        item =>
+          item.status !== "pago" &&
+          item.status !== "cancelado"
+      )
+      .reduce(
+        (total, item) =>
+          total + Number(item.valor),
+        0
+      );
+
+  document.querySelector(
+    "#total-pendente-admin"
+  ).textContent =
     moeda.format(totalPendente);
 }
 
-elementos.formLogin.addEventListener("submit", async evento => {
-  evento.preventDefault();
+elementos.formLogin.addEventListener(
+  "submit",
+  async evento => {
+    evento.preventDefault();
 
-  const email = document.querySelector("#email").value.trim();
-  const senha = document.querySelector("#senha").value;
+    const email =
+      document.querySelector(
+        "#email"
+      ).value.trim();
 
-  elementos.botaoLogin.disabled = true;
-  elementos.botaoLogin.textContent = "Entrando...";
-  definirMensagem(elementos.mensagemLogin, "");
+    const senha =
+      document.querySelector(
+        "#senha"
+      ).value;
 
-  try {
-    const { data, error } =
-      await supabaseClient.auth.signInWithPassword({
-        email,
-        password: senha
-      });
+    elementos.botaoLogin.disabled =
+      true;
 
-    if (error) throw error;
-
-    usuarioAtual = data.user;
-    perfilAtual = await carregarPerfil(usuarioAtual.id);
-
-    mostrarAplicacao(perfilAtual);
-
-    if (perfilAtual.funcao === "administrador") {
-      await carregarPainelAdmin();
-    } else {
-      await carregarPainelEntregador();
-    }
-  } catch (erro) {
-    console.error(erro);
+    elementos.botaoLogin.textContent =
+      "Entrando...";
 
     definirMensagem(
       elementos.mensagemLogin,
-      erro.message || "Não foi possível entrar.",
-      "erro"
+      ""
     );
-  } finally {
-    elementos.botaoLogin.disabled = false;
-    elementos.botaoLogin.textContent = "Entrar";
+
+    try {
+      const {
+        data,
+        error
+      } = await supabaseClient
+        .auth
+        .signInWithPassword({
+          email,
+          password: senha
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      usuarioAtual =
+        data.user;
+
+      perfilAtual =
+        await carregarPerfil(
+          usuarioAtual.id
+        );
+
+      mostrarAplicacao(
+        perfilAtual
+      );
+
+      if (
+        perfilAtual.funcao ===
+        "administrador"
+      ) {
+        await carregarPainelAdmin();
+      } else {
+        await carregarPainelEntregador();
+      }
+    } catch (erro) {
+      console.error(erro);
+
+      definirMensagem(
+        elementos.mensagemLogin,
+        erro.message ||
+          "Não foi possível entrar.",
+        "erro"
+      );
+    } finally {
+      elementos.botaoLogin.disabled =
+        false;
+
+      elementos.botaoLogin.textContent =
+        "Entrar";
+    }
   }
-});
+);
 
-elementos.botaoSair.addEventListener("click", async () => {
-  await supabaseClient.auth.signOut();
+elementos.botaoSair.addEventListener(
+  "click",
+  async () => {
+    await supabaseClient
+      .auth
+      .signOut();
 
-  usuarioAtual = null;
-  perfilAtual = null;
+    usuarioAtual = null;
+    perfilAtual = null;
 
-  elementos.formLogin.reset();
-  definirMensagem(elementos.mensagemLogin, "");
-  mostrarLogin();
-});
+    elementos.formLogin.reset();
 
-document
-  .querySelector("#form-pagamento")
-  .addEventListener("submit", async evento => {
+    definirMensagem(
+      elementos.mensagemLogin,
+      ""
+    );
+
+    mostrarLogin();
+  }
+);
+
+document.querySelector(
+  "#form-pagamento"
+).addEventListener(
+  "submit",
+  async evento => {
     evento.preventDefault();
 
-    const mensagem = document.querySelector(
-      "#mensagem-pagamento"
+    const mensagem =
+      document.querySelector(
+        "#mensagem-pagamento"
+      );
+
+    definirMensagem(
+      mensagem,
+      "Salvando..."
     );
 
-    definirMensagem(mensagem, "Salvando...");
-
-    const status = document.querySelector(
-      "#pagamento-status"
-    ).value;
+    const status =
+      document.querySelector(
+        "#pagamento-status"
+      ).value;
 
     const registro = {
-      entregador_id: document.querySelector(
-        "#pagamento-entregador"
-      ).value,
-      periodo_inicio: document.querySelector(
-        "#periodo-inicio"
-      ).value,
-      periodo_fim: document.querySelector(
-        "#periodo-fim"
-      ).value,
-      valor: Number(
-        document.querySelector("#pagamento-valor").value
-      ),
+      entregador_id:
+        document.querySelector(
+          "#pagamento-entregador"
+        ).value,
+
+      periodo_inicio:
+        document.querySelector(
+          "#periodo-inicio"
+        ).value,
+
+      periodo_fim:
+        document.querySelector(
+          "#periodo-fim"
+        ).value,
+
+      valor:
+        Number(
+          document.querySelector(
+            "#pagamento-valor"
+          ).value
+        ),
+
       data_prevista:
-        document.querySelector("#data-prevista").value || null,
+        document.querySelector(
+          "#data-prevista"
+        ).value || null,
+
       data_pagamento:
-        status === "pago" ? obterDataISO(new Date()) : null,
+        status === "pago"
+          ? obterDataISO(new Date())
+          : null,
+
       status
     };
 
     try {
-      const { error } = await supabaseClient
+      const {
+        error
+      } = await supabaseClient
         .from("pagamentos")
         .insert(registro);
 
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
 
       evento.target.reset();
 
@@ -1274,65 +1688,20 @@ document
         "erro"
       );
     }
-  });
-
-supabaseClient.auth.onAuthStateChange(evento => {
-  if (evento === "SIGNED_OUT") {
-    mostrarLogin();
   }
-});
+);
+
+supabaseClient.auth.onAuthStateChange(
+  evento => {
+    if (
+      evento === "SIGNED_OUT"
+    ) {
+      mostrarLogin();
+    }
+  }
+);
 
 iniciarSistema();
-"""
-
-readme = """# Blackdot System v0.1
-
-Primeira versão funcional do sistema interno da Hamburgueria Blackdot.
-
-## Funcionalidades
-
-- Login com Supabase.
-- Separação entre administrador e entregador.
-- Motoboy marca disponibilidade.
-- Administrador vê disponibilidades futuras.
-- Administrador registra pagamentos.
-- Motoboy vê apenas os próprios pagamentos.
-- Layout responsivo para celular.
-
-## Estrutura
-
-- `index.html`
-- `css/style.css`
-- `js/config.js`
-- `js/app.js`
-
-## Publicação
-
-Os arquivos devem ficar na raiz do repositório, mantendo exatamente as pastas `css` e `js`.
-
-## Usuários de teste
-
-- Administrador: `admin@blackdot.com`
-- Entregador: `felipe@blackdot.com`
-
-As senhas são as cadastradas no Supabase Authentication.
-"""
-
-files = {
-    base / "index.html": index_html,
-    base / "css" / "style.css": style_css,
-    base / "js" / "config.js": config_js,
-    base / "js" / "app.js": app_js,
-    base / "README.md": readme,
-}
-
-for path, content in files.items():
-    path.write_text(content, encoding="utf-8")
-
-zip_path = Path("/mnt/data/blackdot-v0.1.zip")
-with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
-    for path in base.rglob("*"):
-        if path.is_file():
-            z.write(path, path.relative_to(base.parent))
-
-print(zip_path)
+  </script>
+</body>
+</html>
