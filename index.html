@@ -2,412 +2,921 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blackdot System</title>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
   <meta name="theme-color" content="#0b0d12">
 
+  <title>Blackdot System</title>
+
   <style>
-:root {
-  --fundo: #0b0d12;
-  --superficie: #151821;
-  --superficie-2: #1d212c;
-  --borda: #303643;
-  --texto: #ffffff;
-  --texto-2: #9da6b5;
-  --destaque: #f5a623;
-  --destaque-hover: #da901b;
-  --verde: #36c978;
-  --vermelho: #ff6868;
-  --azul: #5792ff;
-  --sombra: 0 18px 50px rgba(0, 0, 0, 0.35);
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  min-height: 100vh;
-  font-family: Arial, Helvetica, sans-serif;
-  color: var(--texto);
-  background:
-    radial-gradient(circle at top, #292014 0, var(--fundo) 42%);
-}
-
-button,
-input,
-select {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-.oculto {
-  display: none !important;
-}
-
-.container {
-  width: min(1120px, calc(100% - 32px));
-  margin: 0 auto;
-}
-
-.tela-login {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-}
-
-.cartao-login {
-  width: 100%;
-  max-width: 430px;
-  padding: 32px;
-  border: 1px solid var(--borda);
-  border-radius: 24px;
-  background: var(--superficie);
-  box-shadow: var(--sombra);
-}
-
-.logo {
-  width: 66px;
-  height: 66px;
-  display: grid;
-  place-items: center;
-  margin-bottom: 24px;
-  border-radius: 19px;
-  background: var(--destaque);
-  font-size: 34px;
-}
-
-h1 {
-  font-size: 30px;
-}
-
-h2 {
-  font-size: 20px;
-}
-
-.texto-secundario {
-  margin-top: 8px;
-  color: var(--texto-2);
-  line-height: 1.5;
-}
-
-.campo {
-  margin-top: 18px;
-}
-
-label {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--texto-2);
-  font-size: 14px;
-}
-
-input,
-select {
-  width: 100%;
-  min-height: 50px;
-  padding: 13px 15px;
-  border: 1px solid var(--borda);
-  border-radius: 13px;
-  outline: none;
-  color: var(--texto);
-  background: var(--superficie-2);
-}
-
-input:focus,
-select:focus {
-  border-color: var(--destaque);
-}
-
-.botao {
-  min-height: 48px;
-  padding: 12px 18px;
-  border: 0;
-  border-radius: 13px;
-  font-weight: 700;
-}
-
-.botao-principal {
-  width: 100%;
-  margin-top: 22px;
-  color: #111111;
-  background: var(--destaque);
-}
-
-.botao-principal:hover {
-  background: var(--destaque-hover);
-}
-
-.botao-secundario {
-  color: var(--texto);
-  background: var(--superficie-2);
-  border: 1px solid var(--borda);
-}
-
-.mensagem {
-  min-height: 22px;
-  margin-top: 16px;
-  text-align: center;
-  font-size: 14px;
-}
-
-.mensagem.erro {
-  color: var(--vermelho);
-}
-
-.mensagem.sucesso {
-  color: var(--verde);
-}
-
-.topo {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  border-bottom: 1px solid var(--borda);
-  background: rgba(11, 13, 18, 0.94);
-  backdrop-filter: blur(14px);
-}
-
-.topo-conteudo {
-  min-height: 72px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.marca {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.marca-icone {
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  border-radius: 13px;
-  background: var(--destaque);
-}
-
-.marca strong,
-.marca span {
-  display: block;
-}
-
-.marca span {
-  margin-top: 3px;
-  color: var(--texto-2);
-  font-size: 13px;
-}
-
-.conteudo {
-  padding: 34px 0 60px;
-}
-
-.cabecalho-pagina {
-  margin-bottom: 26px;
-}
-
-.grade-resumo {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 22px;
-}
-
-.cartao {
-  border: 1px solid var(--borda);
-  border-radius: 19px;
-  background: var(--superficie);
-  box-shadow: var(--sombra);
-}
-
-.resumo-card {
-  padding: 22px;
-}
-
-.resumo-card span {
-  color: var(--texto-2);
-  font-size: 14px;
-}
-
-.resumo-card strong {
-  display: block;
-  margin-top: 10px;
-  font-size: 27px;
-}
-
-.secao {
-  padding: 24px;
-  margin-top: 20px;
-}
-
-.secao-topo {
-  margin-bottom: 20px;
-}
-
-.grade-formulario {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.grade-dias {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.dia {
-  min-height: 106px;
-  padding: 12px;
-  border: 1px solid var(--borda);
-  border-radius: 14px;
-  background: var(--superficie-2);
-  color: var(--texto);
-  text-align: left;
-}
-
-.dia:hover {
-  border-color: var(--destaque);
-}
-
-.dia.disponivel {
-  border-color: var(--verde);
-  background: rgba(54, 201, 120, 0.12);
-}
-
-.dia .semana {
-  color: var(--texto-2);
-  font-size: 12px;
-  text-transform: uppercase;
-}
-
-.dia .numero {
-  display: block;
-  margin-top: 8px;
-  font-size: 23px;
-  font-weight: 700;
-}
-
-.dia .estado {
-  display: block;
-  margin-top: 9px;
-  color: var(--texto-2);
-  font-size: 12px;
-}
-
-.lista {
-  display: grid;
-  gap: 12px;
-}
-
-.item-lista {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 15px;
-  border: 1px solid var(--borda);
-  border-radius: 14px;
-  background: var(--superficie-2);
-}
-
-.vazio {
-  padding: 24px;
-  border: 1px dashed var(--borda);
-  border-radius: 14px;
-  color: var(--texto-2);
-  text-align: center;
-}
-
-.tabela-container {
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  min-width: 720px;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 13px 12px;
-  border-bottom: 1px solid var(--borda);
-  text-align: left;
-}
-
-th {
-  color: var(--texto-2);
-  font-size: 13px;
-}
-
-.status {
-  display: inline-flex;
-  align-items: center;
-  min-height: 28px;
-  padding: 5px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.status-pendente {
-  color: var(--destaque);
-  background: rgba(245, 166, 35, 0.16);
-}
-
-.status-programado {
-  color: #82adff;
-  background: rgba(87, 146, 255, 0.16);
-}
-
-.status-pago {
-  color: var(--verde);
-  background: rgba(54, 201, 120, 0.16);
-}
-
-.status-cancelado {
-  color: var(--vermelho);
-  background: rgba(255, 104, 104, 0.14);
-}
-
-@media (max-width: 820px) {
-  .grade-resumo,
-  .grade-formulario {
-    grid-template-columns: 1fr;
-  }
-
-  .grade-dias {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 520px) {
-  .cartao-login {
-    padding: 26px 21px;
-  }
-
-  .topo-conteudo {
-    min-height: 66px;
-  }
-
-  .marca span {
-    display: none;
-  }
-
-  .secao {
-    padding: 19px;
-  }
-}
+    :root {
+      --fundo: #090b10;
+      --fundo-secundario: #11141c;
+      --cartao: #151925;
+      --cartao-secundario: #1d2230;
+      --borda: #313849;
+
+      --texto: #ffffff;
+      --texto-secundario: #a0a9ba;
+
+      --laranja: #f5a623;
+      --laranja-escuro: #d98e18;
+
+      --verde: #39d47d;
+      --verde-fundo: rgba(57, 212, 125, 0.13);
+
+      --vermelho: #ff6969;
+      --vermelho-fundo: rgba(255, 105, 105, 0.13);
+
+      --azul: #6098ff;
+      --azul-fundo: rgba(96, 152, 255, 0.15);
+
+      --amarelo: #f3c453;
+      --amarelo-fundo: rgba(243, 196, 83, 0.15);
+
+      --sombra: 0 18px 55px rgba(0, 0, 0, 0.38);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      color: var(--texto);
+
+      background:
+        radial-gradient(
+          circle at top,
+          #2b2115 0%,
+          var(--fundo) 38%
+        );
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+
+      min-height: 48px;
+
+      padding: 12px 14px;
+
+      border: 1px solid var(--borda);
+      border-radius: 13px;
+
+      outline: none;
+
+      color: var(--texto);
+      background: var(--cartao-secundario);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--laranja);
+    }
+
+    textarea {
+      min-height: 88px;
+      resize: vertical;
+    }
+
+    label {
+      display: block;
+
+      margin-bottom: 8px;
+
+      color: var(--texto-secundario);
+
+      font-size: 14px;
+    }
+
+    h1 {
+      font-size: 31px;
+    }
+
+    h2 {
+      font-size: 21px;
+    }
+
+    h3 {
+      font-size: 17px;
+    }
+
+    .oculto {
+      display: none !important;
+    }
+
+    .container {
+      width: min(
+        1180px,
+        calc(100% - 30px)
+      );
+
+      margin: 0 auto;
+    }
+
+    .texto-secundario {
+      color: var(--texto-secundario);
+      line-height: 1.5;
+    }
+
+    .mensagem {
+      min-height: 22px;
+
+      margin-top: 15px;
+
+      text-align: center;
+
+      font-size: 14px;
+    }
+
+    .mensagem.erro {
+      color: var(--vermelho);
+    }
+
+    .mensagem.sucesso {
+      color: var(--verde);
+    }
+
+    .botao {
+      min-height: 47px;
+
+      padding: 12px 17px;
+
+      border: 0;
+      border-radius: 13px;
+
+      font-weight: 700;
+    }
+
+    .botao:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    .botao-principal {
+      color: #111111;
+      background: var(--laranja);
+    }
+
+    .botao-principal:hover {
+      background: var(--laranja-escuro);
+    }
+
+    .botao-secundario {
+      color: var(--texto);
+      background: var(--cartao-secundario);
+      border: 1px solid var(--borda);
+    }
+
+    .botao-verde {
+      color: #09120d;
+      background: var(--verde);
+    }
+
+    .botao-amarelo {
+      color: #171207;
+      background: var(--amarelo);
+    }
+
+    .botao-vermelho {
+      color: #190707;
+      background: var(--vermelho);
+    }
+
+    .botao-largo {
+      width: 100%;
+    }
+
+    .tela-login {
+      min-height: 100vh;
+
+      display: grid;
+      place-items: center;
+
+      padding: 24px;
+    }
+
+    .cartao-login {
+      width: 100%;
+      max-width: 430px;
+
+      padding: 32px;
+
+      border: 1px solid var(--borda);
+      border-radius: 25px;
+
+      background: var(--cartao);
+
+      box-shadow: var(--sombra);
+    }
+
+    .logo {
+      width: 67px;
+      height: 67px;
+
+      display: grid;
+      place-items: center;
+
+      margin-bottom: 24px;
+
+      border-radius: 19px;
+
+      background: var(--laranja);
+
+      font-size: 34px;
+    }
+
+    .cartao-login h1 {
+      margin-bottom: 9px;
+    }
+
+    .campo {
+      margin-top: 18px;
+    }
+
+    .cartao-login .botao {
+      width: 100%;
+      margin-top: 23px;
+    }
+
+    .topo {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+
+      border-bottom: 1px solid var(--borda);
+
+      background: rgba(9, 11, 16, 0.95);
+
+      backdrop-filter: blur(15px);
+    }
+
+    .topo-conteudo {
+      min-height: 72px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 18px;
+    }
+
+    .marca {
+      display: flex;
+      align-items: center;
+
+      gap: 12px;
+    }
+
+    .marca-icone {
+      width: 44px;
+      height: 44px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 13px;
+
+      background: var(--laranja);
+    }
+
+    .marca strong,
+    .marca span {
+      display: block;
+    }
+
+    .marca span {
+      margin-top: 3px;
+
+      color: var(--texto-secundario);
+
+      font-size: 13px;
+    }
+
+    .conteudo {
+      padding: 33px 0 65px;
+    }
+
+    .cabecalho-pagina {
+      margin-bottom: 25px;
+    }
+
+    .cabecalho-pagina p {
+      margin-top: 8px;
+    }
+
+    .grade-resumo {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          3,
+          minmax(0, 1fr)
+        );
+
+      gap: 15px;
+
+      margin-bottom: 20px;
+    }
+
+    .cartao {
+      border: 1px solid var(--borda);
+      border-radius: 19px;
+
+      background: var(--cartao);
+
+      box-shadow: var(--sombra);
+    }
+
+    .resumo-card {
+      padding: 22px;
+    }
+
+    .resumo-card span {
+      color: var(--texto-secundario);
+
+      font-size: 14px;
+    }
+
+    .resumo-card strong {
+      display: block;
+
+      margin-top: 10px;
+
+      font-size: 28px;
+    }
+
+    .secao {
+      margin-top: 20px;
+      padding: 23px;
+    }
+
+    .secao-topo {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+
+      gap: 16px;
+
+      margin-bottom: 19px;
+    }
+
+    .secao-topo p {
+      margin-top: 7px;
+    }
+
+    .linha-controles {
+      display: flex;
+      align-items: center;
+
+      gap: 10px;
+
+      flex-wrap: wrap;
+    }
+
+    .linha-controles select,
+    .linha-controles input {
+      width: auto;
+      min-width: 155px;
+    }
+
+    .calendario-cabecalho {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 12px;
+
+      margin-bottom: 17px;
+    }
+
+    .calendario-cabecalho h3 {
+      text-transform: capitalize;
+    }
+
+    .navegacao-mes {
+      display: flex;
+      gap: 8px;
+    }
+
+    .botao-icone {
+      width: 43px;
+      min-height: 43px;
+
+      display: grid;
+      place-items: center;
+
+      padding: 0;
+
+      border: 1px solid var(--borda);
+      border-radius: 12px;
+
+      color: var(--texto);
+      background: var(--cartao-secundario);
+
+      font-size: 19px;
+    }
+
+    .dias-semana {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          7,
+          minmax(0, 1fr)
+        );
+
+      gap: 8px;
+
+      margin-bottom: 8px;
+    }
+
+    .dia-semana-label {
+      padding: 7px 2px;
+
+      color: var(--texto-secundario);
+
+      text-align: center;
+
+      font-size: 12px;
+      font-weight: 700;
+
+      text-transform: uppercase;
+    }
+
+    .grade-calendario {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          7,
+          minmax(0, 1fr)
+        );
+
+      gap: 8px;
+    }
+
+    .dia-vazio {
+      min-height: 101px;
+    }
+
+    .dia-calendario {
+      min-height: 101px;
+
+      padding: 10px;
+
+      border: 1px solid var(--borda);
+      border-radius: 14px;
+
+      color: var(--texto);
+      background: var(--cartao-secundario);
+
+      text-align: left;
+    }
+
+    .dia-calendario:hover {
+      border-color: var(--laranja);
+    }
+
+    .dia-calendario.passado {
+      opacity: 0.47;
+    }
+
+    .dia-calendario.terca {
+      border-color: rgba(255, 105, 105, 0.35);
+      background: rgba(255, 105, 105, 0.08);
+    }
+
+    .dia-calendario.disponivel {
+      border-color: var(--verde);
+      background: var(--verde-fundo);
+    }
+
+    .dia-calendario.confirmado {
+      border-color: var(--azul);
+      background: var(--azul-fundo);
+    }
+
+    .dia-calendario.reserva {
+      border-color: var(--amarelo);
+      background: var(--amarelo-fundo);
+    }
+
+    .dia-calendario.fechado {
+      border-color: var(--vermelho);
+      background: var(--vermelho-fundo);
+    }
+
+    .dia-numero {
+      display: block;
+
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .dia-status {
+      display: block;
+
+      margin-top: 9px;
+
+      color: var(--texto-secundario);
+
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .legenda {
+      display: flex;
+
+      gap: 13px;
+
+      flex-wrap: wrap;
+
+      margin-top: 16px;
+    }
+
+    .legenda-item {
+      display: flex;
+      align-items: center;
+
+      gap: 7px;
+
+      color: var(--texto-secundario);
+
+      font-size: 12px;
+    }
+
+    .legenda-cor {
+      width: 12px;
+      height: 12px;
+
+      border-radius: 4px;
+    }
+
+    .legenda-verde {
+      background: var(--verde);
+    }
+
+    .legenda-azul {
+      background: var(--azul);
+    }
+
+    .legenda-amarelo {
+      background: var(--amarelo);
+    }
+
+    .legenda-vermelho {
+      background: var(--vermelho);
+    }
+
+    .lista {
+      display: grid;
+      gap: 12px;
+    }
+
+    .item-lista {
+      padding: 15px;
+
+      border: 1px solid var(--borda);
+      border-radius: 14px;
+
+      background: var(--cartao-secundario);
+    }
+
+    .item-lista-topo {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+
+      gap: 15px;
+    }
+
+    .item-lista p {
+      margin-top: 6px;
+    }
+
+    .linha-status {
+      display: flex;
+
+      gap: 8px;
+
+      flex-wrap: wrap;
+
+      margin-top: 12px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+
+      min-height: 29px;
+
+      padding: 5px 10px;
+
+      border-radius: 999px;
+
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .status-aberto {
+      color: var(--verde);
+      background: var(--verde-fundo);
+    }
+
+    .status-fechado,
+    .status-cancelado {
+      color: var(--vermelho);
+      background: var(--vermelho-fundo);
+    }
+
+    .status-confirmado {
+      color: #8cb5ff;
+      background: var(--azul-fundo);
+    }
+
+    .status-reserva {
+      color: var(--amarelo);
+      background: var(--amarelo-fundo);
+    }
+
+    .status-disponivel,
+    .status-pendente {
+      color: var(--laranja);
+      background: rgba(245, 166, 35, 0.15);
+    }
+
+    .status-pago {
+      color: var(--verde);
+      background: var(--verde-fundo);
+    }
+
+    .grade-formulario {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(0, 1fr)
+        );
+
+      gap: 15px;
+    }
+
+    .acoes-formulario {
+      display: flex;
+
+      gap: 10px;
+
+      flex-wrap: wrap;
+
+      margin-top: 19px;
+    }
+
+    .acoes-formulario .botao {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .modal-fundo {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+
+      display: grid;
+      place-items: center;
+
+      padding: 18px;
+
+      background: rgba(0, 0, 0, 0.72);
+
+      backdrop-filter: blur(6px);
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 620px;
+      max-height: 92vh;
+
+      overflow-y: auto;
+
+      padding: 24px;
+
+      border: 1px solid var(--borda);
+      border-radius: 20px;
+
+      background: var(--cartao);
+
+      box-shadow: var(--sombra);
+    }
+
+    .modal-topo {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+
+      gap: 15px;
+
+      margin-bottom: 20px;
+    }
+
+    .modal-fechar {
+      width: 40px;
+      min-height: 40px;
+
+      padding: 0;
+
+      border: 1px solid var(--borda);
+      border-radius: 11px;
+
+      color: var(--texto);
+      background: var(--cartao-secundario);
+
+      font-size: 20px;
+    }
+
+    .lista-candidatos {
+      display: grid;
+
+      gap: 10px;
+
+      margin-top: 18px;
+    }
+
+    .candidato {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 12px;
+
+      padding: 13px;
+
+      border: 1px solid var(--borda);
+      border-radius: 13px;
+
+      background: var(--cartao-secundario);
+    }
+
+    .acoes-candidato {
+      display: flex;
+      gap: 7px;
+    }
+
+    .acoes-candidato .botao {
+      min-height: 39px;
+      padding: 8px 10px;
+
+      font-size: 12px;
+    }
+
+    .vazio {
+      padding: 23px;
+
+      border: 1px dashed var(--borda);
+      border-radius: 14px;
+
+      color: var(--texto-secundario);
+
+      text-align: center;
+    }
+
+    .tabela-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 720px;
+
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 13px 12px;
+
+      border-bottom: 1px solid var(--borda);
+
+      text-align: left;
+    }
+
+    th {
+      color: var(--texto-secundario);
+
+      font-size: 13px;
+    }
+
+    @media (max-width: 880px) {
+      .grade-resumo {
+        grid-template-columns: 1fr;
+      }
+
+      .grade-formulario {
+        grid-template-columns: 1fr;
+      }
+
+      .grade-calendario,
+      .dias-semana {
+        gap: 5px;
+      }
+
+      .dia-calendario,
+      .dia-vazio {
+        min-height: 86px;
+      }
+
+      .dia-calendario {
+        padding: 8px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .cartao-login {
+        padding: 26px 21px;
+      }
+
+      .topo-conteudo {
+        min-height: 66px;
+      }
+
+      .marca span {
+        display: none;
+      }
+
+      .secao {
+        padding: 18px;
+      }
+
+      .secao-topo {
+        display: block;
+      }
+
+      .secao-topo .linha-controles {
+        margin-top: 14px;
+      }
+
+      .dia-semana-label {
+        font-size: 9px;
+      }
+
+      .dia-calendario,
+      .dia-vazio {
+        min-height: 74px;
+      }
+
+      .dia-numero {
+        font-size: 16px;
+      }
+
+      .dia-status {
+        font-size: 9px;
+      }
+
+      .item-lista-topo,
+      .candidato {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .acoes-candidato {
+        width: 100%;
+      }
+
+      .acoes-candidato .botao {
+        flex: 1;
+      }
+    }
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -419,12 +928,16 @@ th {
       <div class="logo">🍔</div>
 
       <h1>Blackdot</h1>
+
       <p class="texto-secundario">
         Sistema interno de escalas e pagamentos.
       </p>
 
       <div class="campo">
-        <label for="email">E-mail</label>
+        <label for="email">
+          E-mail
+        </label>
+
         <input
           id="email"
           type="email"
@@ -435,7 +948,10 @@ th {
       </div>
 
       <div class="campo">
-        <label for="senha">Senha</label>
+        <label for="senha">
+          Senha
+        </label>
+
         <input
           id="senha"
           type="password"
@@ -453,19 +969,32 @@ th {
         Entrar
       </button>
 
-      <div id="mensagem-login" class="mensagem"></div>
+      <div
+        id="mensagem-login"
+        class="mensagem"
+      ></div>
     </form>
   </section>
 
-  <section id="aplicacao" class="oculto">
+  <section
+    id="aplicacao"
+    class="oculto"
+  >
     <header class="topo">
       <div class="container topo-conteudo">
         <div class="marca">
-          <div class="marca-icone">🍔</div>
+          <div class="marca-icone">
+            🍔
+          </div>
 
           <div>
-            <strong>Blackdot System</strong>
-            <span id="tipo-usuario">Sistema interno</span>
+            <strong>
+              Blackdot System
+            </strong>
+
+            <span id="tipo-usuario">
+              Sistema interno
+            </span>
           </div>
         </div>
 
@@ -481,7 +1010,9 @@ th {
 
     <main class="container conteudo">
       <section class="cabecalho-pagina">
-        <h1 id="boas-vindas">Olá</h1>
+        <h1 id="boas-vindas">
+          Olá
+        </h1>
 
         <p
           id="descricao-painel"
@@ -491,22 +1022,38 @@ th {
         </p>
       </section>
 
-      <section id="painel-admin" class="oculto">
+      <section
+        id="painel-admin"
+        class="oculto"
+      >
         <div class="grade-resumo">
           <article class="cartao resumo-card">
-            <span>Motoboys ativos</span>
-            <strong id="total-motoboys">0</strong>
+            <span>
+              Motoboys ativos
+            </span>
+
+            <strong id="total-motoboys">
+              0
+            </strong>
           </article>
 
           <article class="cartao resumo-card">
-            <span>Disponibilidades futuras</span>
-            <strong id="total-disponibilidades">0</strong>
+            <span>
+              Disponibilidades do mês
+            </span>
+
+            <strong id="total-disponibilidades-admin">
+              0
+            </strong>
           </article>
 
           <article class="cartao resumo-card">
-            <span>Total pendente</span>
-            <strong id="total-pendente-admin">
-              R$ 0,00
+            <span>
+              Escalas confirmadas
+            </span>
+
+            <strong id="total-confirmados-admin">
+              0
             </strong>
           </article>
         </div>
@@ -514,16 +1061,100 @@ th {
         <section class="cartao secao">
           <div class="secao-topo">
             <div>
-              <h2>Disponibilidade dos motoboys</h2>
+              <h2>
+                Calendário operacional
+              </h2>
 
               <p class="texto-secundario">
-                Dias marcados para os próximos 30 dias.
+                Configure abertura, horários, vagas e escala de cada dia.
+              </p>
+            </div>
+          </div>
+
+          <div class="calendario-cabecalho">
+            <h3 id="mes-admin-titulo">
+              Mês
+            </h3>
+
+            <div class="navegacao-mes">
+              <button
+                id="admin-mes-anterior"
+                class="botao-icone"
+                type="button"
+                aria-label="Mês anterior"
+              >
+                ‹
+              </button>
+
+              <button
+                id="admin-mes-seguinte"
+                class="botao-icone"
+                type="button"
+                aria-label="Próximo mês"
+              >
+                ›
+              </button>
+            </div>
+          </div>
+
+          <div class="dias-semana">
+            <div class="dia-semana-label">Dom</div>
+            <div class="dia-semana-label">Seg</div>
+            <div class="dia-semana-label">Ter</div>
+            <div class="dia-semana-label">Qua</div>
+            <div class="dia-semana-label">Qui</div>
+            <div class="dia-semana-label">Sex</div>
+            <div class="dia-semana-label">Sáb</div>
+          </div>
+
+          <div
+            id="calendario-admin"
+            class="grade-calendario"
+          ></div>
+
+          <div class="legenda">
+            <div class="legenda-item">
+              <span class="legenda-cor legenda-verde"></span>
+              Aberto
+            </div>
+
+            <div class="legenda-item">
+              <span class="legenda-cor legenda-azul"></span>
+              Escala completa
+            </div>
+
+            <div class="legenda-item">
+              <span class="legenda-cor legenda-amarelo"></span>
+              Escala parcial
+            </div>
+
+            <div class="legenda-item">
+              <span class="legenda-cor legenda-vermelho"></span>
+              Fechado
+            </div>
+          </div>
+
+          <div
+            id="mensagem-calendario-admin"
+            class="mensagem"
+          ></div>
+        </section>
+
+        <section class="cartao secao">
+          <div class="secao-topo">
+            <div>
+              <h2>
+                Próximas escalas
+              </h2>
+
+              <p class="texto-secundario">
+                Resumo de vagas, confirmados e reservas.
               </p>
             </div>
           </div>
 
           <div
-            id="lista-disponibilidades"
+            id="lista-proximas-escalas"
             class="lista"
           ></div>
         </section>
@@ -531,10 +1162,12 @@ th {
         <section class="cartao secao">
           <div class="secao-topo">
             <div>
-              <h2>Novo pagamento</h2>
+              <h2>
+                Pagamentos
+              </h2>
 
               <p class="texto-secundario">
-                Registre o valor previsto para um motoboy.
+                O módulo financeiro continua disponível.
               </p>
             </div>
           </div>
@@ -624,7 +1257,7 @@ th {
             </div>
 
             <button
-              class="botao botao-principal"
+              class="botao botao-principal botao-largo"
               type="submit"
             >
               Salvar pagamento
@@ -636,56 +1269,40 @@ th {
             ></div>
           </form>
         </section>
-
-        <section class="cartao secao">
-          <div class="secao-topo">
-            <div>
-              <h2>Pagamentos cadastrados</h2>
-
-              <p class="texto-secundario">
-                Histórico geral de pagamentos.
-              </p>
-            </div>
-          </div>
-
-          <div class="tabela-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Motoboy</th>
-                  <th>Período</th>
-                  <th>Valor</th>
-                  <th>Previsão</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-
-              <tbody
-                id="tabela-pagamentos-admin"
-              ></tbody>
-            </table>
-          </div>
-        </section>
       </section>
 
-      <section id="painel-entregador" class="oculto">
+      <section
+        id="painel-entregador"
+        class="oculto"
+      >
         <div class="grade-resumo">
           <article class="cartao resumo-card">
-            <span>Dias disponíveis</span>
-            <strong id="total-disponiveis">0</strong>
-          </article>
+            <span>
+              Dias disponíveis
+            </span>
 
-          <article class="cartao resumo-card">
-            <span>Pagamentos pendentes</span>
-            <strong id="total-pendente-entregador">
-              R$ 0,00
+            <strong id="total-disponiveis">
+              0
             </strong>
           </article>
 
           <article class="cartao resumo-card">
-            <span>Próximo pagamento</span>
-            <strong id="proximo-pagamento">
-              Sem previsão
+            <span>
+              Dias confirmados
+            </span>
+
+            <strong id="total-confirmados-entregador">
+              0
+            </strong>
+          </article>
+
+          <article class="cartao resumo-card">
+            <span>
+              Pagamentos pendentes
+            </span>
+
+            <strong id="total-pendente-entregador">
+              R$ 0,00
             </strong>
           </article>
         </div>
@@ -693,18 +1310,78 @@ th {
         <section class="cartao secao">
           <div class="secao-topo">
             <div>
-              <h2>Minha disponibilidade</h2>
+              <h2>
+                Minha disponibilidade
+              </h2>
 
               <p class="texto-secundario">
-                Toque em um dia para marcar ou remover.
+                Marque os dias em que poderá trabalhar.
               </p>
             </div>
           </div>
 
+          <div class="calendario-cabecalho">
+            <h3 id="mes-entregador-titulo">
+              Mês
+            </h3>
+
+            <div class="navegacao-mes">
+              <button
+                id="entregador-mes-anterior"
+                class="botao-icone"
+                type="button"
+                aria-label="Mês anterior"
+              >
+                ‹
+              </button>
+
+              <button
+                id="entregador-mes-seguinte"
+                class="botao-icone"
+                type="button"
+                aria-label="Próximo mês"
+              >
+                ›
+              </button>
+            </div>
+          </div>
+
+          <div class="dias-semana">
+            <div class="dia-semana-label">Dom</div>
+            <div class="dia-semana-label">Seg</div>
+            <div class="dia-semana-label">Ter</div>
+            <div class="dia-semana-label">Qua</div>
+            <div class="dia-semana-label">Qui</div>
+            <div class="dia-semana-label">Sex</div>
+            <div class="dia-semana-label">Sáb</div>
+          </div>
+
           <div
-            id="calendario"
-            class="grade-dias"
+            id="calendario-entregador"
+            class="grade-calendario"
           ></div>
+
+          <div class="legenda">
+            <div class="legenda-item">
+              <span class="legenda-cor legenda-verde"></span>
+              Disponível
+            </div>
+
+            <div class="legenda-item">
+              <span class="legenda-cor legenda-azul"></span>
+              Confirmado
+            </div>
+
+            <div class="legenda-item">
+              <span class="legenda-cor legenda-amarelo"></span>
+              Reserva
+            </div>
+
+            <div class="legenda-item">
+              <span class="legenda-cor legenda-vermelho"></span>
+              Fechado
+            </div>
+          </div>
 
           <div
             id="mensagem-disponibilidade"
@@ -715,10 +1392,31 @@ th {
         <section class="cartao secao">
           <div class="secao-topo">
             <div>
-              <h2>Meus pagamentos</h2>
+              <h2>
+                Escala da equipe
+              </h2>
 
               <p class="texto-secundario">
-                Apenas seus próprios valores aparecem aqui.
+                Veja quem está confirmado e se ainda existem vagas.
+              </p>
+            </div>
+          </div>
+
+          <div
+            id="lista-escala-equipe"
+            class="lista"
+          ></div>
+        </section>
+
+        <section class="cartao secao">
+          <div class="secao-topo">
+            <div>
+              <h2>
+                Meus pagamentos
+              </h2>
+
+              <p class="texto-secundario">
+                Somente seus próprios valores aparecem aqui.
               </p>
             </div>
           </div>
@@ -744,964 +1442,2832 @@ th {
     </main>
   </section>
 
-  <script>
-const SUPABASE_URL =
-  "https://uckqzovckjnkqamqfuob.supabase.co";
-
-const SUPABASE_PUBLISHABLE_KEY =
-  "sb_publishable_r3D7V3jVa3OPx9_OY2EGPA_MklVrlEx";
-
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_PUBLISHABLE_KEY
-);
-
-let usuarioAtual = null;
-let perfilAtual = null;
-
-const elementos = {
-  telaLogin: document.querySelector("#tela-login"),
-  aplicacao: document.querySelector("#aplicacao"),
-  formLogin: document.querySelector("#form-login"),
-  mensagemLogin: document.querySelector("#mensagem-login"),
-  botaoLogin: document.querySelector("#botao-login"),
-  botaoSair: document.querySelector("#botao-sair"),
-  painelAdmin: document.querySelector("#painel-admin"),
-  painelEntregador: document.querySelector(
-    "#painel-entregador"
-  )
-};
-
-const moeda = new Intl.NumberFormat("pt-BR", {
-  style: "currency",
-  currency: "BRL"
-});
-
-const dataBR = new Intl.DateTimeFormat("pt-BR", {
-  timeZone: "UTC"
-});
-
-function definirMensagem(elemento, texto, tipo = "") {
-  elemento.textContent = texto;
-  elemento.className = `mensagem ${tipo}`;
-}
-
-function formatarData(data) {
-  if (!data) {
-    return "Sem previsão";
-  }
-
-  return dataBR.format(
-    new Date(`${data}T12:00:00Z`)
-  );
-}
-
-function obterDataISO(data) {
-  const ano = data.getFullYear();
-
-  const mes = String(
-    data.getMonth() + 1
-  ).padStart(2, "0");
-
-  const dia = String(
-    data.getDate()
-  ).padStart(2, "0");
-
-  return `${ano}-${mes}-${dia}`;
-}
-
-function obterProximosDias(quantidade = 15) {
-  const dias = [];
-
-  for (let i = 0; i < quantidade; i += 1) {
-    const data = new Date();
-
-    data.setHours(12, 0, 0, 0);
-    data.setDate(data.getDate() + i);
-
-    if (data.getDay() === 2) {
-      continue;
-    }
-
-    dias.push(data);
-  }
-
-  return dias;
-}
-
-function criarStatus(status) {
-  const nomes = {
-    pendente: "Pendente",
-    programado: "Programado",
-    pago: "Pago",
-    cancelado: "Cancelado"
-  };
-
-  return `
-    <span class="status status-${status}">
-      ${nomes[status] || status}
-    </span>
-  `;
-}
-
-function mostrarLogin() {
-  elementos.telaLogin.classList.remove("oculto");
-  elementos.aplicacao.classList.add("oculto");
-  elementos.painelAdmin.classList.add("oculto");
-  elementos.painelEntregador.classList.add("oculto");
-}
-
-function mostrarAplicacao(perfil) {
-  elementos.telaLogin.classList.add("oculto");
-  elementos.aplicacao.classList.remove("oculto");
-
-  const admin =
-    perfil.funcao === "administrador";
-
-  document.querySelector(
-    "#boas-vindas"
-  ).textContent = `Olá, ${perfil.nome}`;
-
-  document.querySelector(
-    "#tipo-usuario"
-  ).textContent = admin
-    ? "Administrador"
-    : "Entregador";
-
-  document.querySelector(
-    "#descricao-painel"
-  ).textContent = admin
-    ? "Acompanhe disponibilidades e pagamentos."
-    : "Marque seus dias e acompanhe seus pagamentos.";
-
-  elementos.painelAdmin.classList.toggle(
-    "oculto",
-    !admin
-  );
-
-  elementos.painelEntregador.classList.toggle(
-    "oculto",
-    admin
-  );
-}
-
-async function carregarPerfil(usuarioId) {
-  const { data, error } = await supabaseClient
-    .from("perfis")
-    .select("id, nome, telefone, funcao, ativo")
-    .eq("id", usuarioId)
-    .single();
-
-  if (error) {
-    throw new Error(
-      "Login aceito, mas o perfil não foi encontrado."
-    );
-  }
-
-  if (!data.ativo) {
-    throw new Error(
-      "Este usuário está desativado."
-    );
-  }
-
-  return data;
-}
-
-async function iniciarSistema() {
-  const {
-    data: { session },
-    error
-  } = await supabaseClient.auth.getSession();
-
-  if (error || !session) {
-    mostrarLogin();
-    return;
-  }
-
-  try {
-    usuarioAtual = session.user;
-
-    perfilAtual = await carregarPerfil(
-      usuarioAtual.id
-    );
-
-    mostrarAplicacao(perfilAtual);
-
-    if (
-      perfilAtual.funcao === "administrador"
-    ) {
-      await carregarPainelAdmin();
-    } else {
-      await carregarPainelEntregador();
-    }
-  } catch (erro) {
-    console.error(erro);
-
-    await supabaseClient.auth.signOut();
-
-    mostrarLogin();
-
-    definirMensagem(
-      elementos.mensagemLogin,
-      erro.message,
-      "erro"
-    );
-  }
-}
-
-async function carregarPainelEntregador() {
-  await Promise.all([
-    carregarCalendario(),
-    carregarPagamentosEntregador()
-  ]);
-}
-async function carregarCalendario() {
-  const dias = obterProximosDias();
-
-  const primeiraData =
-    obterDataISO(dias[0]);
-
-  const ultimaData =
-    obterDataISO(dias[dias.length - 1]);
-
-  const {
-    data: disponibilidades,
-    error
-  } = await supabaseClient
-    .from("disponibilidades")
-    .select("id, data")
-    .eq("entregador_id", usuarioAtual.id)
-    .gte("data", primeiraData)
-    .lte("data", ultimaData);
-
-  if (error) {
-    throw error;
-  }
-
-  const datasMarcadas = new Map(
-    disponibilidades.map(item => [
-      item.data,
-      item.id
-    ])
-  );
-
-  const calendario =
-    document.querySelector("#calendario");
-
-  calendario.innerHTML = "";
-
-  dias.forEach(data => {
-    const dataISO =
-      obterDataISO(data);
-
-    const disponivel =
-      datasMarcadas.has(dataISO);
-
-    const botao =
-      document.createElement("button");
-
-    botao.type = "button";
-
-    botao.className =
-      `dia ${disponivel ? "disponivel" : ""}`;
-
-    botao.innerHTML = `
-      <span class="semana">
-        ${data.toLocaleDateString(
-          "pt-BR",
-          {
-            weekday: "short"
-          }
-        )}
-      </span>
-
-      <span class="numero">
-        ${data.getDate()}
-      </span>
-
-      <span class="estado">
-        ${
-          disponivel
-            ? "Disponível"
-            : "Não marcado"
-        }
-      </span>
-    `;
-
-    botao.addEventListener(
-      "click",
-      async () => {
-        botao.disabled = true;
-
-        try {
-          if (disponivel) {
-            const {
-              error: erroDelete
-            } = await supabaseClient
-              .from("disponibilidades")
-              .delete()
-              .eq(
-                "id",
-                datasMarcadas.get(dataISO)
-              );
-
-            if (erroDelete) {
-              throw erroDelete;
-            }
-
-            definirMensagem(
-              document.querySelector(
-                "#mensagem-disponibilidade"
-              ),
-              "Disponibilidade removida.",
-              "sucesso"
-            );
-          } else {
-            const {
-              error: erroInsert
-            } = await supabaseClient
-              .from("disponibilidades")
-              .insert({
-                entregador_id:
-                  usuarioAtual.id,
-
-                data:
-                  dataISO,
-
-                hora_inicio:
-                  "18:00",
-
-                hora_fim:
-                  "23:59"
-              });
-
-            if (erroInsert) {
-              throw erroInsert;
-            }
-
-            definirMensagem(
-              document.querySelector(
-                "#mensagem-disponibilidade"
-              ),
-              "Disponibilidade registrada.",
-              "sucesso"
-            );
-          }
-
-          await carregarCalendario();
-        } catch (erro) {
-          definirMensagem(
-            document.querySelector(
-              "#mensagem-disponibilidade"
-            ),
-            erro.message,
-            "erro"
-          );
-
-          botao.disabled = false;
-        }
-      }
-    );
-
-    calendario.appendChild(botao);
-  });
-
-  document.querySelector(
-    "#total-disponiveis"
-  ).textContent =
-    disponibilidades.length;
-}
-
-async function carregarPagamentosEntregador() {
-  const {
-    data: pagamentos,
-    error
-  } = await supabaseClient
-    .from("pagamentos")
-    .select("*")
-    .eq(
-      "entregador_id",
-      usuarioAtual.id
-    )
-    .order(
-      "periodo_inicio",
-      {
-        ascending: false
-      }
-    );
-
-  if (error) {
-    throw error;
-  }
-
-  const corpo =
-    document.querySelector(
-      "#tabela-pagamentos-entregador"
-    );
-
-  corpo.innerHTML = "";
-
-  if (pagamentos.length === 0) {
-    corpo.innerHTML = `
-      <tr>
-        <td colspan="4">
-          Nenhum pagamento cadastrado.
-        </td>
-      </tr>
-    `;
-  }
-
-  pagamentos.forEach(
-    pagamento => {
-      const linha =
-        document.createElement("tr");
-
-      linha.innerHTML = `
-        <td>
-          ${formatarData(
-            pagamento.periodo_inicio
-          )}
-          até
-          ${formatarData(
-            pagamento.periodo_fim
-          )}
-        </td>
-
-        <td>
-          ${moeda.format(
-            Number(
-              pagamento.valor
-            )
-          )}
-        </td>
-
-        <td>
-          ${formatarData(
-            pagamento.data_prevista
-          )}
-        </td>
-
-        <td>
-          ${criarStatus(
-            pagamento.status
-          )}
-        </td>
-      `;
-
-      corpo.appendChild(linha);
-    }
-  );
-
-  const pendentes =
-    pagamentos.filter(
-      item =>
-        item.status !== "pago" &&
-        item.status !== "cancelado"
-    );
-
-  const totalPendente =
-    pendentes.reduce(
-      (total, item) =>
-        total + Number(item.valor),
-      0
-    );
-
-  document.querySelector(
-    "#total-pendente-entregador"
-  ).textContent =
-    moeda.format(totalPendente);
-
-  const comPrevisao =
-    pendentes
-      .filter(
-        item =>
-          item.data_prevista
-      )
-      .sort(
-        (a, b) =>
-          a.data_prevista.localeCompare(
-            b.data_prevista
-          )
-      );
-
-  document.querySelector(
-    "#proximo-pagamento"
-  ).textContent =
-    comPrevisao.length > 0
-      ? formatarData(
-          comPrevisao[0]
-            .data_prevista
-        )
-      : "Sem previsão";
-}
-
-async function carregarPainelAdmin() {
-  await carregarMotoboysAdmin();
-
-  await Promise.all([
-    carregarDisponibilidadesAdmin(),
-    carregarPagamentosAdmin()
-  ]);
-}
-
-async function carregarMotoboysAdmin() {
-  const {
-    data,
-    error
-  } = await supabaseClient
-    .from("perfis")
-    .select("id, nome")
-    .eq(
-      "funcao",
-      "entregador"
-    )
-    .eq(
-      "ativo",
-      true
-    )
-    .order("nome");
-
-  if (error) {
-    throw error;
-  }
-
-  document.querySelector(
-    "#total-motoboys"
-  ).textContent =
-    data.length;
-
-  const select =
-    document.querySelector(
-      "#pagamento-entregador"
-    );
-
-  select.innerHTML = "";
-
-  data.forEach(perfil => {
-    const option =
-      document.createElement("option");
-
-    option.value =
-      perfil.id;
-
-    option.textContent =
-      perfil.nome;
-
-    select.appendChild(option);
-  });
-}
-
-async function carregarDisponibilidadesAdmin() {
-  const hoje =
-    obterDataISO(new Date());
-
-  const limite =
-    new Date();
-
-  limite.setDate(
-    limite.getDate() + 30
-  );
-
-  const {
-    data,
-    error
-  } = await supabaseClient
-    .from("disponibilidades")
-    .select(`
-      id,
-      data,
-      hora_inicio,
-      hora_fim,
-      entregador_id,
-      perfis (
-        nome
-      )
-    `)
-    .gte(
-      "data",
-      hoje
-    )
-    .lte(
-      "data",
-      obterDataISO(limite)
-    )
-    .order("data");
-
-  if (error) {
-    throw error;
-  }
-
-  document.querySelector(
-    "#total-disponibilidades"
-  ).textContent =
-    data.length;
-
-  const lista =
-    document.querySelector(
-      "#lista-disponibilidades"
-    );
-
-  lista.innerHTML = "";
-
-  if (data.length === 0) {
-    lista.innerHTML = `
-      <div class="vazio">
-        Nenhuma disponibilidade marcada.
+  <section
+    id="modal-dia"
+    class="modal-fundo oculto"
+  >
+    <div class="modal">
+      <div class="modal-topo">
+        <div>
+          <h2 id="modal-dia-titulo">
+            Configurar data
+          </h2>
+
+          <p
+            id="modal-dia-subtitulo"
+            class="texto-secundario"
+          ></p>
+        </div>
+
+        <button
+          id="modal-dia-fechar"
+          class="modal-fechar"
+          type="button"
+        >
+          ×
+        </button>
       </div>
-    `;
 
-    return;
-  }
+      <form id="form-configuracao-dia">
+        <input
+          id="config-data"
+          type="hidden"
+        >
 
-  data.forEach(item => {
-    const elemento =
-      document.createElement("div");
+        <div class="grade-formulario">
+          <div class="campo">
+            <label for="config-status">
+              Situação da hamburgueria
+            </label>
 
-    elemento.className =
-      "item-lista";
+            <select id="config-status">
+              <option value="aberto">
+                Aberto
+              </option>
 
-    elemento.innerHTML = `
-      <div>
-        <strong>
-          ${
-            item.perfis?.nome ||
-            "Entregador"
-          }
-        </strong>
+              <option value="fechado">
+                Fechado
+              </option>
+
+              <option value="cancelado">
+                Cancelado
+              </option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="config-vagas">
+              Quantidade de vagas
+            </label>
+
+            <input
+              id="config-vagas"
+              type="number"
+              min="0"
+              step="1"
+              value="1"
+            >
+          </div>
+
+          <div class="campo">
+            <label for="config-inicio">
+              Abertura
+            </label>
+
+            <input
+              id="config-inicio"
+              type="time"
+              value="18:00"
+            >
+          </div>
+
+          <div class="campo">
+            <label for="config-fim">
+              Encerramento
+            </label>
+
+            <input
+              id="config-fim"
+              type="time"
+              value="23:59"
+            >
+          </div>
+        </div>
+
+        <div class="campo">
+          <label for="config-observacao">
+            Observação
+          </label>
+
+          <textarea
+            id="config-observacao"
+            placeholder="Evento, manutenção, feriado, fechamento excepcional..."
+          ></textarea>
+        </div>
+
+        <div class="acoes-formulario">
+          <button
+            class="botao botao-principal"
+            type="submit"
+          >
+            Salvar configuração
+          </button>
+
+          <button
+            id="botao-restaurar-padrao"
+            class="botao botao-secundario"
+            type="button"
+          >
+            Restaurar padrão
+          </button>
+        </div>
+
+        <div
+          id="mensagem-configuracao-dia"
+          class="mensagem"
+        ></div>
+      </form>
+
+      <hr
+        style="
+          margin: 25px 0;
+          border: 0;
+          border-top: 1px solid var(--borda);
+        "
+      >
+
+      <section>
+        <h3>
+          Motoboys disponíveis
+        </h3>
 
         <p class="texto-secundario">
-          ${formatarData(
-            item.data
-          )}
+          Confirme ou coloque como reserva.
         </p>
-      </div>
 
-      <div>
-        ${
-          item.hora_inicio
-            ?.slice(0, 5) ||
-          "18:00"
-        }
-        até
-        ${
-          item.hora_fim
-            ?.slice(0, 5) ||
-          "23:59"
-        }
-      </div>
-    `;
+        <div
+          id="lista-candidatos-dia"
+          class="lista-candidatos"
+        ></div>
 
-    lista.appendChild(elemento);
-  });
-}
+        <div
+          id="mensagem-escala-dia"
+          class="mensagem"
+        ></div>
+      </section>
+    </div>
+  </section>
 
-async function carregarPagamentosAdmin() {
-  const {
-    data,
-    error
-  } = await supabaseClient
-    .from("pagamentos")
-    .select(`
-      *,
-      perfis (
-        nome
-      )
-    `)
-    .order(
-      "periodo_inicio",
-      {
-        ascending: false
-      }
-    );
+  <script>
+    const SUPABASE_URL =
+      "https://uckqzovckjnkqamqfuob.supabase.co";
 
-  if (error) {
-    throw error;
-  }
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_r3D7V3jVa3OPx9_OY2EGPA_MklVrlEx";
 
-  const corpo =
-    document.querySelector(
-      "#tabela-pagamentos-admin"
-    );
-
-  corpo.innerHTML = "";
-
-  if (data.length === 0) {
-    corpo.innerHTML = `
-      <tr>
-        <td colspan="5">
-          Nenhum pagamento cadastrado.
-        </td>
-      </tr>
-    `;
-  }
-
-  data.forEach(
-    pagamento => {
-      const linha =
-        document.createElement("tr");
-
-      linha.innerHTML = `
-        <td>
-          ${
-            pagamento.perfis?.nome ||
-            "Entregador"
-          }
-        </td>
-
-        <td>
-          ${formatarData(
-            pagamento.periodo_inicio
-          )}
-          até
-          ${formatarData(
-            pagamento.periodo_fim
-          )}
-        </td>
-
-        <td>
-          ${moeda.format(
-            Number(
-              pagamento.valor
-            )
-          )}
-        </td>
-
-        <td>
-          ${formatarData(
-            pagamento.data_prevista
-          )}
-        </td>
-
-        <td>
-          ${criarStatus(
-            pagamento.status
-          )}
-        </td>
-      `;
-
-      corpo.appendChild(linha);
-    }
-  );
-
-  const totalPendente =
-    data
-      .filter(
-        item =>
-          item.status !== "pago" &&
-          item.status !== "cancelado"
-      )
-      .reduce(
-        (total, item) =>
-          total + Number(item.valor),
-        0
+    const supabaseClient =
+      supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
       );
 
-  document.querySelector(
-    "#total-pendente-admin"
-  ).textContent =
-    moeda.format(totalPendente);
-}
+    let usuarioAtual = null;
+    let perfilAtual = null;
 
-elementos.formLogin.addEventListener(
-  "submit",
-  async evento => {
-    evento.preventDefault();
+    let motoboysAtivos = [];
 
-    const email =
+    let mesAdmin =
+      new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        1
+      );
+
+    let mesEntregador =
+      new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        1
+      );
+
+    let dataSelecionadaAdmin = null;
+
+    const moeda =
+      new Intl.NumberFormat(
+        "pt-BR",
+        {
+          style: "currency",
+          currency: "BRL"
+        }
+      );
+
+    const formatadorData =
+      new Intl.DateTimeFormat(
+        "pt-BR",
+        {
+          timeZone: "UTC"
+        }
+      );
+
+    const formatadorMes =
+      new Intl.DateTimeFormat(
+        "pt-BR",
+        {
+          month: "long",
+          year: "numeric"
+        }
+      );
+
+    const elementos = {
+      telaLogin:
+        document.querySelector(
+          "#tela-login"
+        ),
+
+      aplicacao:
+        document.querySelector(
+          "#aplicacao"
+        ),
+
+      formLogin:
+        document.querySelector(
+          "#form-login"
+        ),
+
+      botaoLogin:
+        document.querySelector(
+          "#botao-login"
+        ),
+
+      mensagemLogin:
+        document.querySelector(
+          "#mensagem-login"
+        ),
+
+      botaoSair:
+        document.querySelector(
+          "#botao-sair"
+        ),
+
+      painelAdmin:
+        document.querySelector(
+          "#painel-admin"
+        ),
+
+      painelEntregador:
+        document.querySelector(
+          "#painel-entregador"
+        ),
+
+      modalDia:
+        document.querySelector(
+          "#modal-dia"
+        )
+    };
+
+    function definirMensagem(
+      elemento,
+      texto,
+      tipo = ""
+    ) {
+      elemento.textContent = texto;
+
+      elemento.className =
+        `mensagem ${tipo}`;
+    }
+
+    function obterDataISO(data) {
+      const ano =
+        data.getFullYear();
+
+      const mes =
+        String(
+          data.getMonth() + 1
+        ).padStart(2, "0");
+
+      const dia =
+        String(
+          data.getDate()
+        ).padStart(2, "0");
+
+      return `${ano}-${mes}-${dia}`;
+    }
+
+    function criarDataLocal(dataISO) {
+      return new Date(
+        `${dataISO}T12:00:00`
+      );
+    }
+
+    function formatarData(dataISO) {
+      if (!dataISO) {
+        return "Sem previsão";
+      }
+
+      return formatadorData.format(
+        new Date(
+          `${dataISO}T12:00:00Z`
+        )
+      );
+    }
+
+    function nomeMes(data) {
+      return formatadorMes
+        .format(data)
+        .replace(
+          /^\w/,
+          letra =>
+            letra.toUpperCase()
+        );
+    }
+
+    function inicioMes(data) {
+      return new Date(
+        data.getFullYear(),
+        data.getMonth(),
+        1
+      );
+    }
+
+    function fimMes(data) {
+      return new Date(
+        data.getFullYear(),
+        data.getMonth() + 1,
+        0
+      );
+    }
+
+    function adicionarMes(
+      data,
+      quantidade
+    ) {
+      return new Date(
+        data.getFullYear(),
+        data.getMonth() + quantidade,
+        1
+      );
+    }
+
+    function hojeSemHora() {
+      const hoje = new Date();
+
+      return new Date(
+        hoje.getFullYear(),
+        hoje.getMonth(),
+        hoje.getDate()
+      );
+    }
+
+    function criarStatus(
+      status,
+      texto = null
+    ) {
+      const nomes = {
+        aberto: "Aberto",
+        fechado: "Fechado",
+        cancelado: "Cancelado",
+        confirmado: "Confirmado",
+        reserva: "Reserva",
+        disponivel: "Disponível",
+        pendente: "Pendente",
+        pago: "Pago",
+        programado: "Programado"
+      };
+
+      return `
+        <span class="status status-${status}">
+          ${texto || nomes[status] || status}
+        </span>
+      `;
+    }
+
+    function mostrarLogin() {
+      elementos.telaLogin
+        .classList
+        .remove("oculto");
+
+      elementos.aplicacao
+        .classList
+        .add("oculto");
+
+      elementos.painelAdmin
+        .classList
+        .add("oculto");
+
+      elementos.painelEntregador
+        .classList
+        .add("oculto");
+    }
+
+    function mostrarAplicacao(
+      perfil
+    ) {
+      elementos.telaLogin
+        .classList
+        .add("oculto");
+
+      elementos.aplicacao
+        .classList
+        .remove("oculto");
+
+      const administrador =
+        perfil.funcao ===
+        "administrador";
+
       document.querySelector(
-        "#email"
-      ).value.trim();
+        "#boas-vindas"
+      ).textContent =
+        `Olá, ${perfil.nome}`;
 
-    const senha =
       document.querySelector(
-        "#senha"
-      ).value;
+        "#tipo-usuario"
+      ).textContent =
+        perfil.cargo
+          ? perfil.cargo
+              .charAt(0)
+              .toUpperCase() +
+            perfil.cargo.slice(1)
+          : administrador
+            ? "Administrador"
+            : "Entregador";
 
-    elementos.botaoLogin.disabled =
-      true;
+      document.querySelector(
+        "#descricao-painel"
+      ).textContent =
+        administrador
+          ? "Gerencie operação, vagas e escala da equipe."
+          : "Informe sua disponibilidade e acompanhe sua escala.";
 
-    elementos.botaoLogin.textContent =
-      "Entrando...";
+      elementos.painelAdmin
+        .classList
+        .toggle(
+          "oculto",
+          !administrador
+        );
 
-    definirMensagem(
-      elementos.mensagemLogin,
-      ""
-    );
+      elementos.painelEntregador
+        .classList
+        .toggle(
+          "oculto",
+          administrador
+        );
+    }
 
-    try {
+    async function carregarPerfil(
+      usuarioId
+    ) {
       const {
         data,
         error
       } = await supabaseClient
-        .auth
-        .signInWithPassword({
-          email,
-          password: senha
-        });
+        .from("perfis")
+        .select(
+          "id, nome, funcao, cargo, ativo"
+        )
+        .eq(
+          "id",
+          usuarioId
+        )
+        .single();
+
+      if (error) {
+        throw new Error(
+          "Login aceito, mas o perfil não foi encontrado."
+        );
+      }
+
+      if (!data.ativo) {
+        throw new Error(
+          "Este usuário está desativado."
+        );
+      }
+
+      return data;
+    }
+
+    async function carregarMotoboys() {
+      const {
+        data,
+        error
+      } = await supabaseClient
+        .from("perfis")
+        .select(
+          "id, nome, ativo"
+        )
+        .eq(
+          "funcao",
+          "entregador"
+        )
+        .eq(
+          "ativo",
+          true
+        )
+        .order("nome");
 
       if (error) {
         throw error;
       }
 
-      usuarioAtual =
-        data.user;
+      motoboysAtivos =
+        data || [];
 
-      perfilAtual =
-        await carregarPerfil(
-          usuarioAtual.id
+      const total =
+        document.querySelector(
+          "#total-motoboys"
         );
 
-      mostrarAplicacao(
-        perfilAtual
-      );
-
-      if (
-        perfilAtual.funcao ===
-        "administrador"
-      ) {
-        await carregarPainelAdmin();
-      } else {
-        await carregarPainelEntregador();
+      if (total) {
+        total.textContent =
+          motoboysAtivos.length;
       }
-    } catch (erro) {
-      console.error(erro);
 
-      definirMensagem(
-        elementos.mensagemLogin,
-        erro.message ||
-          "Não foi possível entrar.",
-        "erro"
-      );
-    } finally {
-      elementos.botaoLogin.disabled =
-        false;
-
-      elementos.botaoLogin.textContent =
-        "Entrar";
-    }
-  }
-);
-
-elementos.botaoSair.addEventListener(
-  "click",
-  async () => {
-    await supabaseClient
-      .auth
-      .signOut();
-
-    usuarioAtual = null;
-    perfilAtual = null;
-
-    elementos.formLogin.reset();
-
-    definirMensagem(
-      elementos.mensagemLogin,
-      ""
-    );
-
-    mostrarLogin();
-  }
-);
-
-document.querySelector(
-  "#form-pagamento"
-).addEventListener(
-  "submit",
-  async evento => {
-    evento.preventDefault();
-
-    const mensagem =
-      document.querySelector(
-        "#mensagem-pagamento"
-      );
-
-    definirMensagem(
-      mensagem,
-      "Salvando..."
-    );
-
-    const status =
-      document.querySelector(
-        "#pagamento-status"
-      ).value;
-
-    const registro = {
-      entregador_id:
+      const selectPagamento =
         document.querySelector(
           "#pagamento-entregador"
-        ).value,
+        );
 
-      periodo_inicio:
+      if (selectPagamento) {
+        selectPagamento.innerHTML = "";
+
+        motoboysAtivos.forEach(
+          motoboy => {
+            const option =
+              document.createElement(
+                "option"
+              );
+
+            option.value =
+              motoboy.id;
+
+            option.textContent =
+              motoboy.nome;
+
+            selectPagamento
+              .appendChild(option);
+          }
+        );
+      }
+    }
+        async function obterConfiguracoesMes(
+      mesReferencia
+    ) {
+      const inicio =
+        obterDataISO(
+          inicioMes(mesReferencia)
+        );
+
+      const fim =
+        obterDataISO(
+          fimMes(mesReferencia)
+        );
+
+      const {
+        data,
+        error
+      } = await supabaseClient
+        .rpc(
+          "configuracao_da_data",
+          {
+            data_consultada:
+              inicio
+          }
+        );
+
+      if (error) {
+        console.warn(
+          "RPC inicial ignorada:",
+          error
+        );
+      }
+
+      const configuracoes = [];
+
+      const inicioData =
+        inicioMes(mesReferencia);
+
+      const fimData =
+        fimMes(mesReferencia);
+
+      const cursor =
+        new Date(inicioData);
+
+      while (
+        cursor <= fimData
+      ) {
+        const dataISO =
+          obterDataISO(cursor);
+
+        const {
+          data: configuracao,
+          error: erroConfiguracao
+        } = await supabaseClient
+          .rpc(
+            "configuracao_da_data",
+            {
+              data_consultada:
+                dataISO
+            }
+          );
+
+        if (
+          erroConfiguracao
+        ) {
+          throw erroConfiguracao;
+        }
+
+        if (
+          configuracao &&
+          configuracao.length > 0
+        ) {
+          configuracoes.push(
+            configuracao[0]
+          );
+        }
+
+        cursor.setDate(
+          cursor.getDate() + 1
+        );
+      }
+
+      return configuracoes;
+    }
+
+    async function obterDisponibilidadesMes(
+      mesReferencia,
+      entregadorId = null
+    ) {
+      const inicio =
+        obterDataISO(
+          inicioMes(mesReferencia)
+        );
+
+      const fim =
+        obterDataISO(
+          fimMes(mesReferencia)
+        );
+
+      let consulta =
+        supabaseClient
+          .from(
+            "disponibilidades"
+          )
+          .select(
+            `
+              id,
+              entregador_id,
+              data,
+              hora_inicio,
+              hora_fim,
+              perfis (
+                nome
+              )
+            `
+          )
+          .gte(
+            "data",
+            inicio
+          )
+          .lte(
+            "data",
+            fim
+          )
+          .order("data");
+
+      if (
+        entregadorId
+      ) {
+        consulta =
+          consulta.eq(
+            "entregador_id",
+            entregadorId
+          );
+      }
+
+      const {
+        data,
+        error
+      } = await consulta;
+
+      if (error) {
+        throw error;
+      }
+
+      return data || [];
+    }
+
+    async function obterEscalasMes(
+      mesReferencia,
+      entregadorId = null
+    ) {
+      const inicio =
+        obterDataISO(
+          inicioMes(mesReferencia)
+        );
+
+      const fim =
+        obterDataISO(
+          fimMes(mesReferencia)
+        );
+
+      let consulta =
+        supabaseClient
+          .from("escalas")
+          .select(
+            `
+              id,
+              data,
+              entregador_id,
+              status,
+              origem,
+              observacao,
+              perfis!escalas_entregador_id_fkey (
+                nome
+              )
+            `
+          )
+          .gte(
+            "data",
+            inicio
+          )
+          .lte(
+            "data",
+            fim
+          )
+          .order("data");
+
+      if (
+        entregadorId
+      ) {
+        consulta =
+          consulta.eq(
+            "entregador_id",
+            entregadorId
+          );
+      }
+
+      const {
+        data,
+        error
+      } = await consulta;
+
+      if (error) {
+        throw error;
+      }
+
+      return data || [];
+    }
+
+    function montarGradeBaseMes(
+      elemento,
+      mesReferencia
+    ) {
+      elemento.innerHTML = "";
+
+      const primeiroDia =
+        inicioMes(
+          mesReferencia
+        );
+
+      const ultimoDia =
+        fimMes(
+          mesReferencia
+        );
+
+      const vaziosIniciais =
+        primeiroDia.getDay();
+
+      for (
+        let i = 0;
+        i < vaziosIniciais;
+        i += 1
+      ) {
+        const vazio =
+          document.createElement(
+            "div"
+          );
+
+        vazio.className =
+          "dia-vazio";
+
+        elemento.appendChild(
+          vazio
+        );
+      }
+
+      const diasDoMes =
+        ultimoDia.getDate();
+
+      const botoes = [];
+
+      for (
+        let dia = 1;
+        dia <= diasDoMes;
+        dia += 1
+      ) {
+        const data =
+          new Date(
+            mesReferencia
+              .getFullYear(),
+            mesReferencia
+              .getMonth(),
+            dia
+          );
+
+        const botao =
+          document.createElement(
+            "button"
+          );
+
+        botao.type =
+          "button";
+
+        botao.className =
+          "dia-calendario";
+
+        botao.dataset.data =
+          obterDataISO(data);
+
+        botao.innerHTML = `
+          <span class="dia-numero">
+            ${dia}
+          </span>
+
+          <span class="dia-status">
+            Carregando...
+          </span>
+        `;
+
+        elemento.appendChild(
+          botao
+        );
+
+        botoes.push(botao);
+      }
+
+      return botoes;
+    }
+
+    async function carregarCalendarioAdmin() {
+      document.querySelector(
+        "#mes-admin-titulo"
+      ).textContent =
+        nomeMes(mesAdmin);
+
+      const calendario =
         document.querySelector(
-          "#periodo-inicio"
-        ).value,
+          "#calendario-admin"
+        );
 
-      periodo_fim:
+      const botoes =
+        montarGradeBaseMes(
+          calendario,
+          mesAdmin
+        );
+
+      definirMensagem(
         document.querySelector(
-          "#periodo-fim"
-        ).value,
+          "#mensagem-calendario-admin"
+        ),
+        "Carregando calendário..."
+      );
 
-      valor:
+      try {
+        const [
+          configuracoes,
+          disponibilidades,
+          escalas
+        ] = await Promise.all([
+          obterConfiguracoesMes(
+            mesAdmin
+          ),
+
+          obterDisponibilidadesMes(
+            mesAdmin
+          ),
+
+          obterEscalasMes(
+            mesAdmin
+          )
+        ]);
+
+        const configuracoesPorData =
+          new Map(
+            configuracoes.map(
+              item => [
+                item.data,
+                item
+              ]
+            )
+          );
+
+        const disponibilidadesPorData =
+          new Map();
+
+        disponibilidades.forEach(
+          item => {
+            if (
+              !disponibilidadesPorData
+                .has(item.data)
+            ) {
+              disponibilidadesPorData
+                .set(
+                  item.data,
+                  []
+                );
+            }
+
+            disponibilidadesPorData
+              .get(item.data)
+              .push(item);
+          }
+        );
+
+        const escalasPorData =
+          new Map();
+
+        escalas.forEach(
+          item => {
+            if (
+              !escalasPorData
+                .has(item.data)
+            ) {
+              escalasPorData
+                .set(
+                  item.data,
+                  []
+                );
+            }
+
+            escalasPorData
+              .get(item.data)
+              .push(item);
+          }
+        );
+
+        botoes.forEach(
+          botao => {
+            const dataISO =
+              botao.dataset.data;
+
+            const data =
+              criarDataLocal(
+                dataISO
+              );
+
+            const configuracao =
+              configuracoesPorData
+                .get(dataISO);
+
+            const disponiveis =
+              disponibilidadesPorData
+                .get(dataISO) || [];
+
+            const escalasDia =
+              escalasPorData
+                .get(dataISO) || [];
+
+            const confirmados =
+              escalasDia.filter(
+                item =>
+                  item.status ===
+                    "confirmado" ||
+                  item.status ===
+                    "trabalhou"
+              );
+
+            const reservas =
+              escalasDia.filter(
+                item =>
+                  item.status ===
+                  "reserva"
+              );
+
+            const fechado =
+              !configuracao ||
+              configuracao.status ===
+                "fechado" ||
+              configuracao.status ===
+                "cancelado";
+
+            const vagas =
+              configuracao
+                ?.quantidade_vagas ||
+              0;
+
+            const status =
+              botao.querySelector(
+                ".dia-status"
+              );
+
+            botao.className =
+              "dia-calendario";
+
+            if (
+              data <
+              hojeSemHora()
+            ) {
+              botao.classList.add(
+                "passado"
+              );
+            }
+
+            if (
+              data.getDay() === 2
+            ) {
+              botao.classList.add(
+                "terca"
+              );
+            }
+
+            if (fechado) {
+              botao.classList.add(
+                "fechado"
+              );
+
+              status.textContent =
+                configuracao
+                  ?.status ===
+                  "cancelado"
+                  ? "Cancelado"
+                  : "Fechado";
+            } else if (
+              confirmados.length >=
+              vagas
+            ) {
+              botao.classList.add(
+                "confirmado"
+              );
+
+              status.textContent =
+                `${confirmados.length}/${vagas} confirmados`;
+            } else if (
+              confirmados.length > 0
+            ) {
+              botao.classList.add(
+                "reserva"
+              );
+
+              status.textContent =
+                `${confirmados.length}/${vagas} • ${disponiveis.length} disponíveis`;
+            } else {
+              botao.classList.add(
+                "disponivel"
+              );
+
+              status.textContent =
+                `${vagas} vaga(s) • ${disponiveis.length} disponíveis`;
+            }
+
+            if (
+              reservas.length > 0
+            ) {
+              status.textContent +=
+                ` • ${reservas.length} reserva(s)`;
+            }
+
+            botao.addEventListener(
+              "click",
+              () =>
+                abrirModalDia(
+                  dataISO,
+                  configuracao,
+                  disponiveis,
+                  escalasDia
+                )
+            );
+          }
+        );
+
+        document.querySelector(
+          "#total-disponibilidades-admin"
+        ).textContent =
+          disponibilidades.length;
+
+        document.querySelector(
+          "#total-confirmados-admin"
+        ).textContent =
+          escalas.filter(
+            item =>
+              item.status ===
+                "confirmado" ||
+              item.status ===
+                "trabalhou"
+          ).length;
+
+        definirMensagem(
+          document.querySelector(
+            "#mensagem-calendario-admin"
+          ),
+          ""
+        );
+
+        await carregarProximasEscalas();
+      } catch (erro) {
+        console.error(erro);
+
+        definirMensagem(
+          document.querySelector(
+            "#mensagem-calendario-admin"
+          ),
+          erro.message,
+          "erro"
+        );
+      }
+    }
+
+    async function abrirModalDia(
+      dataISO,
+      configuracao,
+      disponibilidades,
+      escalasDia
+    ) {
+      dataSelecionadaAdmin =
+        dataISO;
+
+      document.querySelector(
+        "#config-data"
+      ).value =
+        dataISO;
+
+      document.querySelector(
+        "#modal-dia-titulo"
+      ).textContent =
+        `Configurar ${formatarData(
+          dataISO
+        )}`;
+
+      document.querySelector(
+        "#modal-dia-subtitulo"
+      ).textContent =
+        configuracao?.origem ===
+        "excecao"
+          ? "Esta data possui uma configuração específica."
+          : "Esta data está usando o padrão semanal.";
+
+      document.querySelector(
+        "#config-status"
+      ).value =
+        configuracao?.status ||
+        "aberto";
+
+      document.querySelector(
+        "#config-vagas"
+      ).value =
+        configuracao
+          ?.quantidade_vagas ??
+        1;
+
+      document.querySelector(
+        "#config-inicio"
+      ).value =
+        configuracao
+          ?.hora_inicio
+          ?.slice(0, 5) ||
+        "18:00";
+
+      document.querySelector(
+        "#config-fim"
+      ).value =
+        configuracao
+          ?.hora_fim
+          ?.slice(0, 5) ||
+        "23:59";
+
+      document.querySelector(
+        "#config-observacao"
+      ).value =
+        configuracao
+          ?.observacao ||
+        "";
+
+      montarListaCandidatos(
+        dataISO,
+        disponibilidades,
+        escalasDia,
+        configuracao
+      );
+
+      definirMensagem(
+        document.querySelector(
+          "#mensagem-configuracao-dia"
+        ),
+        ""
+      );
+
+      definirMensagem(
+        document.querySelector(
+          "#mensagem-escala-dia"
+        ),
+        ""
+      );
+
+      elementos.modalDia
+        .classList
+        .remove("oculto");
+    }
+
+    function fecharModalDia() {
+      elementos.modalDia
+        .classList
+        .add("oculto");
+
+      dataSelecionadaAdmin =
+        null;
+    }
+
+    function montarListaCandidatos(
+      dataISO,
+      disponibilidades,
+      escalasDia,
+      configuracao
+    ) {
+      const lista =
+        document.querySelector(
+          "#lista-candidatos-dia"
+        );
+
+      lista.innerHTML = "";
+
+      const fechado =
+        !configuracao ||
+        configuracao.status !==
+          "aberto";
+
+      if (fechado) {
+        lista.innerHTML = `
+          <div class="vazio">
+            Esta data está fechada ou cancelada.
+          </div>
+        `;
+
+        return;
+      }
+
+      if (
+        disponibilidades.length ===
+        0
+      ) {
+        lista.innerHTML = `
+          <div class="vazio">
+            Nenhum motoboy marcou disponibilidade para esta data.
+          </div>
+        `;
+
+        return;
+      }
+
+      disponibilidades.forEach(
+        disponibilidade => {
+          const escalaExistente =
+            escalasDia.find(
+              item =>
+                item.entregador_id ===
+                disponibilidade
+                  .entregador_id &&
+                item.status !==
+                  "cancelado"
+            );
+
+          const item =
+            document.createElement(
+              "div"
+            );
+
+          item.className =
+            "candidato";
+
+          const statusAtual =
+            escalaExistente
+              ?.status || null;
+
+          item.innerHTML = `
+            <div>
+              <strong>
+                ${
+                  disponibilidade
+                    .perfis?.nome ||
+                  "Entregador"
+                }
+              </strong>
+
+              <p class="texto-secundario">
+                ${
+                  statusAtual
+                    ? `Status atual: ${statusAtual}`
+                    : "Disponível, aguardando decisão."
+                }
+              </p>
+            </div>
+
+            <div class="acoes-candidato">
+              <button
+                class="botao botao-verde"
+                type="button"
+                data-acao="confirmado"
+              >
+                Confirmar
+              </button>
+
+              <button
+                class="botao botao-amarelo"
+                type="button"
+                data-acao="reserva"
+              >
+                Reserva
+              </button>
+
+              <button
+                class="botao botao-vermelho"
+                type="button"
+                data-acao="cancelado"
+              >
+                Remover
+              </button>
+            </div>
+          `;
+
+          item.querySelectorAll(
+            "[data-acao]"
+          ).forEach(
+            botao => {
+              botao.addEventListener(
+                "click",
+                async () => {
+                  await definirStatusEscala(
+                    dataISO,
+                    disponibilidade
+                      .entregador_id,
+                    botao.dataset
+                      .acao,
+                    escalaExistente
+                      ?.id || null
+                  );
+                }
+              );
+            }
+          );
+
+          lista.appendChild(
+            item
+          );
+        }
+      );
+    }
+
+    async function definirStatusEscala(
+      dataISO,
+      entregadorId,
+      status,
+      escalaId = null
+    ) {
+      const mensagem =
+        document.querySelector(
+          "#mensagem-escala-dia"
+        );
+
+      definirMensagem(
+        mensagem,
+        "Salvando..."
+      );
+
+      try {
+        if (escalaId) {
+          const {
+            error
+          } = await supabaseClient
+            .from("escalas")
+            .update({
+              status,
+              confirmado_em:
+                status ===
+                "confirmado"
+                  ? new Date()
+                      .toISOString()
+                  : null,
+              confirmado_por:
+                status ===
+                "confirmado"
+                  ? usuarioAtual.id
+                  : null
+            })
+            .eq(
+              "id",
+              escalaId
+            );
+
+          if (error) {
+            throw error;
+          }
+        } else {
+          const {
+            error
+          } = await supabaseClient
+            .from("escalas")
+            .insert({
+              data: dataISO,
+              entregador_id:
+                entregadorId,
+              status,
+              origem: "manual",
+              confirmado_em:
+                status ===
+                "confirmado"
+                  ? new Date()
+                      .toISOString()
+                  : null,
+              confirmado_por:
+                status ===
+                "confirmado"
+                  ? usuarioAtual.id
+                  : null
+            });
+
+          if (error) {
+            throw error;
+          }
+        }
+
+        definirMensagem(
+          mensagem,
+          "Escala atualizada.",
+          "sucesso"
+        );
+
+        const configuracao =
+          await supabaseClient
+            .rpc(
+              "configuracao_da_data",
+              {
+                data_consultada:
+                  dataISO
+              }
+            );
+
+        const {
+          data: disponibilidades
+        } = await supabaseClient
+          .from(
+            "disponibilidades"
+          )
+          .select(
+            `
+              id,
+              entregador_id,
+              data,
+              perfis (
+                nome
+              )
+            `
+          )
+          .eq(
+            "data",
+            dataISO
+          );
+
+        const {
+          data: escalas
+        } = await supabaseClient
+          .from("escalas")
+          .select(
+            `
+              id,
+              data,
+              entregador_id,
+              status,
+              perfis!escalas_entregador_id_fkey (
+                nome
+              )
+            `
+          )
+          .eq(
+            "data",
+            dataISO
+          );
+
+        montarListaCandidatos(
+          dataISO,
+          disponibilidades || [],
+          escalas || [],
+          configuracao.data?.[0]
+        );
+
+        await carregarCalendarioAdmin();
+      } catch (erro) {
+        console.error(erro);
+
+        definirMensagem(
+          mensagem,
+          erro.message,
+          "erro"
+        );
+      }
+    }
+
+    async function salvarConfiguracaoDia(
+      evento
+    ) {
+      evento.preventDefault();
+
+      const mensagem =
+        document.querySelector(
+          "#mensagem-configuracao-dia"
+        );
+
+      definirMensagem(
+        mensagem,
+        "Salvando..."
+      );
+
+      const data =
+        document.querySelector(
+          "#config-data"
+        ).value;
+
+      const status =
+        document.querySelector(
+          "#config-status"
+        ).value;
+
+      const vagas =
         Number(
           document.querySelector(
-            "#pagamento-valor"
+            "#config-vagas"
           ).value
-        ),
+        );
 
-      data_prevista:
+      const inicio =
         document.querySelector(
-          "#data-prevista"
-        ).value || null,
+          "#config-inicio"
+        ).value;
 
-      data_pagamento:
-        status === "pago"
-          ? obterDataISO(new Date())
-          : null,
+      const fim =
+        document.querySelector(
+          "#config-fim"
+        ).value;
 
-      status
-    };
+      const observacao =
+        document.querySelector(
+          "#config-observacao"
+        ).value.trim();
 
-    try {
+      try {
+        const registro = {
+          data,
+          status,
+          quantidade_vagas:
+            status === "aberto"
+              ? vagas
+              : 0,
+          hora_inicio:
+            inicio || "18:00",
+          hora_fim:
+            fim || "23:59",
+          observacao:
+            observacao || null
+        };
+
+        const {
+          error
+        } = await supabaseClient
+          .from(
+            "necessidades_escala"
+          )
+          .upsert(
+            registro,
+            {
+              onConflict:
+                "data"
+            }
+          );
+
+        if (error) {
+          throw error;
+        }
+
+        definirMensagem(
+          mensagem,
+          "Configuração salva.",
+          "sucesso"
+        );
+
+        await carregarCalendarioAdmin();
+      } catch (erro) {
+        console.error(erro);
+
+        definirMensagem(
+          mensagem,
+          erro.message,
+          "erro"
+        );
+      }
+    }
+
+    async function restaurarPadraoDia() {
+      if (
+        !dataSelecionadaAdmin
+      ) {
+        return;
+      }
+
+      const mensagem =
+        document.querySelector(
+          "#mensagem-configuracao-dia"
+        );
+
+      definirMensagem(
+        mensagem,
+        "Restaurando..."
+      );
+
+      try {
+        const {
+          error
+        } = await supabaseClient
+          .from(
+            "necessidades_escala"
+          )
+          .delete()
+          .eq(
+            "data",
+            dataSelecionadaAdmin
+          );
+
+        if (error) {
+          throw error;
+        }
+
+        definirMensagem(
+          mensagem,
+          "Padrão semanal restaurado.",
+          "sucesso"
+        );
+
+        fecharModalDia();
+
+        await carregarCalendarioAdmin();
+      } catch (erro) {
+        console.error(erro);
+
+        definirMensagem(
+          mensagem,
+          erro.message,
+          "erro"
+        );
+      }
+    }
+
+    async function carregarProximasEscalas() {
+      const inicio =
+        obterDataISO(
+          hojeSemHora()
+        );
+
+      const limite =
+        new Date(
+          hojeSemHora()
+        );
+
+      limite.setDate(
+        limite.getDate() + 20
+      );
+
+      const fim =
+        obterDataISO(limite);
+
       const {
+        data: escalas,
+        error
+      } = await supabaseClient
+        .from("escalas")
+        .select(
+          `
+            id,
+            data,
+            status,
+            entregador_id,
+            perfis!escalas_entregador_id_fkey (
+              nome
+            )
+          `
+        )
+        .gte(
+          "data",
+          inicio
+        )
+        .lte(
+          "data",
+          fim
+        )
+        .in(
+          "status",
+          [
+            "confirmado",
+            "reserva",
+            "trabalhou"
+          ]
+        )
+        .order("data");
+
+      if (error) {
+        throw error;
+      }
+
+      const lista =
+        document.querySelector(
+          "#lista-proximas-escalas"
+        );
+
+      lista.innerHTML = "";
+
+      if (
+        !escalas ||
+        escalas.length === 0
+      ) {
+        lista.innerHTML = `
+          <div class="vazio">
+            Nenhuma escala confirmada para os próximos dias.
+          </div>
+        `;
+
+        return;
+      }
+
+      const agrupadas =
+        new Map();
+
+      escalas.forEach(
+        item => {
+          if (
+            !agrupadas.has(
+              item.data
+            )
+          ) {
+            agrupadas.set(
+              item.data,
+              []
+            );
+          }
+
+          agrupadas
+            .get(item.data)
+            .push(item);
+        }
+      );
+
+      agrupadas.forEach(
+        (
+          itens,
+          dataISO
+        ) => {
+          const item =
+            document.createElement(
+              "div"
+            );
+
+          item.className =
+            "item-lista";
+
+          item.innerHTML = `
+            <div class="item-lista-topo">
+              <div>
+                <strong>
+                  ${formatarData(
+                    dataISO
+                  )}
+                </strong>
+
+                <p class="texto-secundario">
+                  ${
+                    itens
+                      .filter(
+                        escala =>
+                          escala.status ===
+                            "confirmado" ||
+                          escala.status ===
+                            "trabalhou"
+                      )
+                      .map(
+                        escala =>
+                          escala
+                            .perfis
+                            ?.nome
+                      )
+                      .filter(Boolean)
+                      .join(", ") ||
+                    "Sem confirmados"
+                  }
+                </p>
+              </div>
+
+              <div class="linha-status">
+                ${
+                  itens
+                    .map(
+                      escala =>
+                        criarStatus(
+                          escala.status,
+                          escala
+                            .perfis
+                            ?.nome ||
+                          escala.status
+                        )
+                    )
+                    .join("")
+                }
+              </div>
+            </div>
+          `;
+
+          lista.appendChild(
+            item
+          );
+        }
+      );
+    }
+
+    async function carregarCalendarioEntregador() {
+      document.querySelector(
+        "#mes-entregador-titulo"
+      ).textContent =
+        nomeMes(
+          mesEntregador
+        );
+
+      const calendario =
+        document.querySelector(
+          "#calendario-entregador"
+        );
+
+      const botoes =
+        montarGradeBaseMes(
+          calendario,
+          mesEntregador
+        );
+
+      try {
+        const [
+          configuracoes,
+          disponibilidades,
+          escalasEquipe
+        ] = await Promise.all([
+          obterConfiguracoesMes(
+            mesEntregador
+          ),
+
+          obterDisponibilidadesMes(
+            mesEntregador,
+            usuarioAtual.id
+          ),
+
+          obterEscalasMes(
+            mesEntregador
+          )
+        ]);
+
+        const configuracoesPorData =
+          new Map(
+            configuracoes.map(
+              item => [
+                item.data,
+                item
+              ]
+            )
+          );
+
+        const disponibilidadePorData =
+          new Map(
+            disponibilidades.map(
+              item => [
+                item.data,
+                item
+              ]
+            )
+          );
+
+        const escalaPropriaPorData =
+          new Map();
+
+        escalasEquipe
+          .filter(
+            item =>
+              item.entregador_id ===
+              usuarioAtual.id
+          )
+          .forEach(
+            item => {
+              escalaPropriaPorData
+                .set(
+                  item.data,
+                  item
+                );
+            }
+          );
+
+        botoes.forEach(
+          botao => {
+            const dataISO =
+              botao.dataset.data;
+
+            const data =
+              criarDataLocal(
+                dataISO
+              );
+
+            const configuracao =
+              configuracoesPorData
+                .get(dataISO);
+
+            const disponibilidade =
+              disponibilidadePorData
+                .get(dataISO);
+
+            const escala =
+              escalaPropriaPorData
+                .get(dataISO);
+
+            const status =
+              botao.querySelector(
+                ".dia-status"
+              );
+
+            botao.className =
+              "dia-calendario";
+
+            if (
+              data <
+              hojeSemHora()
+            ) {
+              botao.classList.add(
+                "passado"
+              );
+            }
+
+            const fechado =
+              !configuracao ||
+              configuracao.status !==
+                "aberto";
+
+            if (fechado) {
+              botao.classList.add(
+                "fechado"
+              );
+
+              status.textContent =
+                configuracao
+                  ?.status ===
+                  "cancelado"
+                  ? "Cancelado"
+                  : "Fechado";
+
+              botao.disabled =
+                true;
+
+              return;
+            }
+
+            if (
+              escala?.status ===
+                "confirmado" ||
+              escala?.status ===
+                "trabalhou"
+            ) {
+              botao.classList.add(
+                "confirmado"
+              );
+
+              status.textContent =
+                "Confirmado";
+            } else if (
+              escala?.status ===
+              "reserva"
+            ) {
+              botao.classList.add(
+                "reserva"
+              );
+
+              status.textContent =
+                "Reserva";
+            } else if (
+              disponibilidade
+            ) {
+              botao.classList.add(
+                "disponivel"
+              );
+
+              status.textContent =
+                "Disponível";
+            } else {
+              status.textContent =
+                `${configuracao.quantidade_vagas} vaga(s)`;
+            }
+
+            if (
+              data <
+              hojeSemHora()
+            ) {
+              botao.disabled =
+                true;
+            } else {
+              botao.addEventListener(
+                "click",
+                async () => {
+                  await alternarDisponibilidade(
+                    dataISO,
+                    disponibilidade
+                      ?.id || null
+                  );
+                }
+              );
+            }
+          }
+        );
+
+        document.querySelector(
+          "#total-disponiveis"
+        ).textContent =
+          disponibilidades.length;
+
+        document.querySelector(
+          "#total-confirmados-entregador"
+        ).textContent =
+          escalasEquipe.filter(
+            item =>
+              item.entregador_id ===
+                usuarioAtual.id &&
+              (
+                item.status ===
+                  "confirmado" ||
+                item.status ===
+                  "trabalhou"
+              )
+          ).length;
+
+        await carregarEscalaEquipe(
+          configuracoes,
+          escalasEquipe
+        );
+      } catch (erro) {
+        console.error(erro);
+
+        definirMensagem(
+          document.querySelector(
+            "#mensagem-disponibilidade"
+          ),
+          erro.message,
+          "erro"
+        );
+      }
+    }
+
+    async function alternarDisponibilidade(
+      dataISO,
+      disponibilidadeId
+    ) {
+      const mensagem =
+        document.querySelector(
+          "#mensagem-disponibilidade"
+        );
+
+      definirMensagem(
+        mensagem,
+        "Salvando..."
+      );
+
+      try {
+        if (
+          disponibilidadeId
+        ) {
+          const {
+            error
+          } = await supabaseClient
+            .from(
+              "disponibilidades"
+            )
+            .delete()
+            .eq(
+              "id",
+              disponibilidadeId
+            );
+
+          if (error) {
+            throw error;
+          }
+
+          definirMensagem(
+            mensagem,
+            "Disponibilidade removida.",
+            "sucesso"
+          );
+        } else {
+          const {
+            error
+          } = await supabaseClient
+            .from(
+              "disponibilidades"
+            )
+            .insert({
+              entregador_id:
+                usuarioAtual.id,
+              data:
+                dataISO,
+              hora_inicio:
+                "18:00",
+              hora_fim:
+                "23:59"
+            });
+
+          if (error) {
+            throw error;
+          }
+
+          definirMensagem(
+            mensagem,
+            "Disponibilidade marcada.",
+            "sucesso"
+          );
+        }
+
+        await carregarCalendarioEntregador();
+      } catch (erro) {
+        console.error(erro);
+
+        definirMensagem(
+          mensagem,
+          erro.message,
+          "erro"
+        );
+      }
+    }
+
+    async function carregarEscalaEquipe(
+      configuracoes,
+      escalasEquipe
+    ) {
+      const lista =
+        document.querySelector(
+          "#lista-escala-equipe"
+        );
+
+      lista.innerHTML = "";
+
+      const hoje =
+        obterDataISO(
+          hojeSemHora()
+        );
+
+      const limite =
+        new Date(
+          hojeSemHora()
+        );
+
+      limite.setDate(
+        limite.getDate() + 20
+      );
+
+      const limiteISO =
+        obterDataISO(limite);
+
+      const configuracoesFuturas =
+        configuracoes.filter(
+          item =>
+            item.data >= hoje &&
+            item.data <= limiteISO &&
+            item.status ===
+              "aberto"
+        );
+
+      if (
+        configuracoesFuturas.length ===
+        0
+      ) {
+        lista.innerHTML = `
+          <div class="vazio">
+            Nenhuma data aberta encontrada neste período.
+          </div>
+        `;
+
+        return;
+      }
+
+      configuracoesFuturas.forEach(
+        configuracao => {
+          const escalasDia =
+            escalasEquipe.filter(
+              item =>
+                item.data ===
+                configuracao.data &&
+                item.status !==
+                  "cancelado"
+            );
+
+          const confirmados =
+            escalasDia.filter(
+              item =>
+                item.status ===
+                  "confirmado" ||
+                item.status ===
+                  "trabalhou"
+            );
+
+          const reservas =
+            escalasDia.filter(
+              item =>
+                item.status ===
+                "reserva"
+            );
+
+          const vagas =
+            configuracao
+              .quantidade_vagas;
+
+          const item =
+            document.createElement(
+              "div"
+            );
+
+          item.className =
+            "item-lista";
+
+          item.innerHTML = `
+            <div class="item-lista-topo">
+              <div>
+                <strong>
+                  ${formatarData(
+                    configuracao.data
+                  )}
+                </strong>
+
+                <p class="texto-secundario">
+                  ${
+                    confirmados.length
+                  } de ${vagas} vaga(s) preenchida(s)
+                </p>
+
+                <p class="texto-secundario">
+                  Confirmados:
+                  ${
+                    confirmados
+                      .map(
+                        escala =>
+                          escala
+                            .perfis
+                            ?.nome
+                      )
+                      .filter(Boolean)
+                      .join(", ") ||
+                    "ninguém ainda"
+                  }
+                </p>
+
+                ${
+                  reservas.length > 0
+                    ? `
+                      <p class="texto-secundario">
+                        Reservas:
+                        ${reservas
+                          .map(
+                            escala =>
+                              escala
+                                .perfis
+                                ?.nome
+                          )
+                          .filter(Boolean)
+                          .join(", ")}
+                      </p>
+                    `
+                    : ""
+                }
+              </div>
+
+              <div class="linha-status">
+                ${
+                  confirmados.length >=
+                  vagas
+                    ? criarStatus(
+                        "confirmado",
+                        "Escala completa"
+                      )
+                    : criarStatus(
+                        "disponivel",
+                        `${vagas - confirmados.length} vaga(s)`
+                      )
+                }
+              </div>
+            </div>
+          `;
+
+          lista.appendChild(
+            item
+          );
+        }
+      );
+    }
+
+    async function carregarPagamentosEntregador() {
+      const {
+        data,
         error
       } = await supabaseClient
         .from("pagamentos")
-        .insert(registro);
+        .select("*")
+        .eq(
+          "entregador_id",
+          usuarioAtual.id
+        )
+        .order(
+          "periodo_inicio",
+          {
+            ascending: false
+          }
+        );
 
       if (error) {
         throw error;
       }
 
-      evento.target.reset();
+      const pagamentos =
+        data || [];
 
-      definirMensagem(
-        mensagem,
-        "Pagamento salvo com sucesso.",
-        "sucesso"
+      const corpo =
+        document.querySelector(
+          "#tabela-pagamentos-entregador"
+        );
+
+      corpo.innerHTML = "";
+
+      if (
+        pagamentos.length === 0
+      ) {
+        corpo.innerHTML = `
+          <tr>
+            <td colspan="4">
+              Nenhum pagamento cadastrado.
+            </td>
+          </tr>
+        `;
+      }
+
+      pagamentos.forEach(
+        pagamento => {
+          const linha =
+            document.createElement(
+              "tr"
+            );
+
+          linha.innerHTML = `
+            <td>
+              ${formatarData(
+                pagamento.periodo_inicio
+              )}
+              até
+              ${formatarData(
+                pagamento.periodo_fim
+              )}
+            </td>
+
+            <td>
+              ${moeda.format(
+                Number(
+                  pagamento.valor
+                )
+              )}
+            </td>
+
+            <td>
+              ${formatarData(
+                pagamento.data_prevista
+              )}
+            </td>
+
+            <td>
+              ${criarStatus(
+                pagamento.status
+              )}
+            </td>
+          `;
+
+          corpo.appendChild(
+            linha
+          );
+        }
       );
 
-      await carregarPagamentosAdmin();
-    } catch (erro) {
-      definirMensagem(
-        mensagem,
-        erro.message,
-        "erro"
+      const totalPendente =
+        pagamentos
+          .filter(
+            item =>
+              item.status !==
+                "pago" &&
+              item.status !==
+                "cancelado"
+          )
+          .reduce(
+            (
+              total,
+              item
+            ) =>
+              total +
+              Number(
+                item.valor
+              ),
+            0
+          );
+
+      document.querySelector(
+        "#total-pendente-entregador"
+      ).textContent =
+        moeda.format(
+          totalPendente
+        );
+    }
+
+    async function carregarPainelAdmin() {
+      await carregarMotoboys();
+
+      await Promise.all([
+        carregarCalendarioAdmin()
+      ]);
+    }
+
+    async function carregarPainelEntregador() {
+      await Promise.all([
+        carregarCalendarioEntregador(),
+        carregarPagamentosEntregador()
+      ]);
+    }
+
+    async function iniciarSistema() {
+      const {
+        data: {
+          session
+        },
+        error
+      } = await supabaseClient
+        .auth
+        .getSession();
+
+      if (
+        error ||
+        !session
+      ) {
+        mostrarLogin();
+        return;
+      }
+
+      try {
+        usuarioAtual =
+          session.user;
+
+        perfilAtual =
+          await carregarPerfil(
+            usuarioAtual.id
+          );
+
+        mostrarAplicacao(
+          perfilAtual
+        );
+
+        if (
+          perfilAtual.funcao ===
+          "administrador"
+        ) {
+          await carregarPainelAdmin();
+        } else {
+          await carregarPainelEntregador();
+        }
+      } catch (erro) {
+        console.error(erro);
+
+        await supabaseClient
+          .auth
+          .signOut();
+
+        mostrarLogin();
+
+        definirMensagem(
+          elementos.mensagemLogin,
+          erro.message,
+          "erro"
+        );
+      }
+    }
+
+    elementos.formLogin
+      .addEventListener(
+        "submit",
+        async evento => {
+          evento.preventDefault();
+
+          const email =
+            document.querySelector(
+              "#email"
+            ).value.trim();
+
+          const senha =
+            document.querySelector(
+              "#senha"
+            ).value;
+
+          elementos.botaoLogin
+            .disabled =
+            true;
+
+          elementos.botaoLogin
+            .textContent =
+            "Entrando...";
+
+          definirMensagem(
+            elementos.mensagemLogin,
+            ""
+          );
+
+          try {
+            const {
+              data,
+              error
+            } = await supabaseClient
+              .auth
+              .signInWithPassword({
+                email,
+                password:
+                  senha
+              });
+
+            if (error) {
+              throw error;
+            }
+
+            usuarioAtual =
+              data.user;
+
+            perfilAtual =
+              await carregarPerfil(
+                usuarioAtual.id
+              );
+
+            mostrarAplicacao(
+              perfilAtual
+            );
+
+            if (
+              perfilAtual.funcao ===
+              "administrador"
+            ) {
+              await carregarPainelAdmin();
+            } else {
+              await carregarPainelEntregador();
+            }
+          } catch (erro) {
+            console.error(erro);
+
+            definirMensagem(
+              elementos.mensagemLogin,
+              erro.message ||
+                "Não foi possível entrar.",
+              "erro"
+            );
+          } finally {
+            elementos.botaoLogin
+              .disabled =
+              false;
+
+            elementos.botaoLogin
+              .textContent =
+              "Entrar";
+          }
+        }
       );
-    }
-  }
-);
 
-supabaseClient.auth.onAuthStateChange(
-  evento => {
-    if (
-      evento === "SIGNED_OUT"
-    ) {
-      mostrarLogin();
-    }
-  }
-);
+    elementos.botaoSair
+      .addEventListener(
+        "click",
+        async () => {
+          await supabaseClient
+            .auth
+            .signOut();
 
-iniciarSistema();
+          usuarioAtual = null;
+          perfilAtual = null;
+
+          elementos.formLogin
+            .reset();
+
+          definirMensagem(
+            elementos.mensagemLogin,
+            ""
+          );
+
+          mostrarLogin();
+        }
+      );
+
+    document.querySelector(
+      "#admin-mes-anterior"
+    ).addEventListener(
+      "click",
+      async () => {
+        mesAdmin =
+          adicionarMes(
+            mesAdmin,
+            -1
+          );
+
+        await carregarCalendarioAdmin();
+      }
+    );
+
+    document.querySelector(
+      "#admin-mes-seguinte"
+    ).addEventListener(
+      "click",
+      async () => {
+        mesAdmin =
+          adicionarMes(
+            mesAdmin,
+            1
+          );
+
+        await carregarCalendarioAdmin();
+      }
+    );
+
+    document.querySelector(
+      "#entregador-mes-anterior"
+    ).addEventListener(
+      "click",
+      async () => {
+        mesEntregador =
+          adicionarMes(
+            mesEntregador,
+            -1
+          );
+
+        await carregarCalendarioEntregador();
+      }
+    );
+
+    document.querySelector(
+      "#entregador-mes-seguinte"
+    ).addEventListener(
+      "click",
+      async () => {
+        mesEntregador =
+          adicionarMes(
+            mesEntregador,
+            1
+          );
+
+        await carregarCalendarioEntregador();
+      }
+    );
+
+    document.querySelector(
+      "#modal-dia-fechar"
+    ).addEventListener(
+      "click",
+      fecharModalDia
+    );
+
+    elementos.modalDia
+      .addEventListener(
+        "click",
+        evento => {
+          if (
+            evento.target ===
+            elementos.modalDia
+          ) {
+            fecharModalDia();
+          }
+        }
+      );
+
+    document.querySelector(
+      "#form-configuracao-dia"
+    ).addEventListener(
+      "submit",
+      salvarConfiguracaoDia
+    );
+
+    document.querySelector(
+      "#botao-restaurar-padrao"
+    ).addEventListener(
+      "click",
+      restaurarPadraoDia
+    );
+
+    document.querySelector(
+      "#form-pagamento"
+    ).addEventListener(
+      "submit",
+      async evento => {
+        evento.preventDefault();
+
+        const mensagem =
+          document.querySelector(
+            "#mensagem-pagamento"
+          );
+
+        definirMensagem(
+          mensagem,
+          "Salvando..."
+        );
+
+        const status =
+          document.querySelector(
+            "#pagamento-status"
+          ).value;
+
+        const registro = {
+          entregador_id:
+            document.querySelector(
+              "#pagamento-entregador"
+            ).value,
+
+          periodo_inicio:
+            document.querySelector(
+              "#periodo-inicio"
+            ).value,
+
+          periodo_fim:
+            document.querySelector(
+              "#periodo-fim"
+            ).value,
+
+          valor:
+            Number(
+              document.querySelector(
+                "#pagamento-valor"
+              ).value
+            ),
+
+          data_prevista:
+            document.querySelector(
+              "#data-prevista"
+            ).value || null,
+
+          data_pagamento:
+            status === "pago"
+              ? obterDataISO(
+                  new Date()
+                )
+              : null,
+
+          status
+        };
+
+        try {
+          const {
+            error
+          } = await supabaseClient
+            .from("pagamentos")
+            .insert(
+              registro
+            );
+
+          if (error) {
+            throw error;
+          }
+
+          evento.target
+            .reset();
+
+          definirMensagem(
+            mensagem,
+            "Pagamento salvo com sucesso.",
+            "sucesso"
+          );
+        } catch (erro) {
+          console.error(erro);
+
+          definirMensagem(
+            mensagem,
+            erro.message,
+            "erro"
+          );
+        }
+      }
+    );
+
+    document.querySelector(
+      "#config-status"
+    ).addEventListener(
+      "change",
+      evento => {
+        const fechado =
+          evento.target.value !==
+          "aberto";
+
+        document.querySelector(
+          "#config-vagas"
+        ).disabled =
+          fechado;
+
+        document.querySelector(
+          "#config-inicio"
+        ).disabled =
+          fechado;
+
+        document.querySelector(
+          "#config-fim"
+        ).disabled =
+          fechado;
+      }
+    );
+
+    supabaseClient
+      .auth
+      .onAuthStateChange(
+        evento => {
+          if (
+            evento ===
+            "SIGNED_OUT"
+          ) {
+            mostrarLogin();
+          }
+        }
+      );
+
+    iniciarSistema();
   </script>
 </body>
 </html>
